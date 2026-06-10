@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+
+<html class="" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;display=swap"
+        rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0e0e0e;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+            vertical-align: middle;
+        }
+
+        .custom-toggle {
+            width: 32px;
+            height: 18px;
+            transition: background-color 0.2s;
+            border-radius: 99px;
+            position: relative;
+        }
+
+        .custom-toggle-dot {
+            width: 14px;
+            height: 14px;
+            transition: transform 0.2s;
+            border-radius: 50%;
+        }
+
+        input:checked+.custom-toggle {
+            background-color: #e2e2e2;
+        }
+
+        input:checked+.custom-toggle .custom-toggle-dot {
+            transform: translateX(14px);
+            background-color: #1a1a1a;
+        }
+
+        /* Custom scrollbar for minimalist look */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #474747;
+            border-radius: 10px;
+        }
+    </style>
+    <script
+        id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "primary-fixed-dim": "#c8c6c5", outline: "#747878", "surface-container-highest": "#e0e3e6", "on-primary-fixed-variant": "#474746", "surface-bright": "#f7f9fc", "secondary-fixed": "#e5e2da", "outline-variant": "#c4c7c7", "inverse-primary": "#c8c6c5", "on-tertiary": "#ffffff", "on-tertiary-fixed": "#1c1b1a", "on-primary": "#ffffff", "on-background": "#191c1e", tertiary: "#000000", "surface-variant": "#e0e3e6", "on-secondary-container": "#63635c", "on-primary-fixed": "#1c1b1b", "primary-container": "#1c1b1b", "on-surface-variant": "#444748", "inverse-on-surface": "#eff1f4", "surface-dim": "#d8dadd", "inverse-surface": "#2d3133", background: "#f7f9fc", "tertiary-fixed": "#e6e2df", "tertiary-container": "#1c1b1a", "on-primary-container": "#858383", surface: "#f7f9fc", "on-tertiary-fixed-variant": "#484645", error: "#ba1a1a", "surface-container-lowest": "#ffffff", "secondary-fixed-dim": "#c8c6bf", "error-container": "#ffdad6", "surface-container-low": "#f2f4f7", primary: "#000000", "surface-tint": "#5f5e5e", "primary-fixed": "#e5e2e1", "on-error": "#ffffff", "on-secondary-fixed-variant": "#474741", "on-error-container": "#93000a", "surface-container-high": "#e6e8eb", "on-secondary": "#ffffff", "on-surface": "#191c1e", "tertiary-fixed-dim": "#cac6c4", secondary: "#5f5f58", "on-tertiary-container": "#868382", "surface-container": "#eceef1", "secondary-container": "#e2e0d7", "on-secondary-fixed": "#1c1c17" }, borderRadius: { DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem" }, spacing: { unit: "8px", "margin-mobile": "20px", "container-max-width": "800px", "card-padding": "16px", gutter: "16px", "margin-desktop": "40px" }, fontFamily: { "card-body": ["Inter"], "display-welcome": ["Inter"], "card-title": ["Inter"], "label-caps": ["Inter"], "body-main": ["Inter"], mono: ["JetBrains Mono", "monospace"], headline: ["Inter"], display: ["Inter"], body: ["Inter"], label: ["Inter"] }, fontSize: { "card-body": ["12px", { lineHeight: "1.5", letterSpacing: "0", fontWeight: "400" }], "display-welcome": ["24px", { lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "500" }], "card-title": ["13px", { lineHeight: "1.4", letterSpacing: "0", fontWeight: "500" }], "label-caps": ["10px", { lineHeight: "1", letterSpacing: "0.05em", fontWeight: "600" }], "body-main": ["14px", { lineHeight: "1.6", letterSpacing: "0", fontWeight: "400" }], "mono-small": ["10px", { lineHeight: "1", letterSpacing: "0", fontWeight: "500" }] } } } };</script>
+</head>
+
+<body class="bg-background text-on-surface antialiased overflow-hidden">
+    <!-- TopAppBar -->
+    <header
+        class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-14 bg-surface border-b border-outline-variant/30">
+        <div class="flex items-center gap-4">
+            <span class="font-display-welcome text-[18px] font-semibold text-on-surface tracking-tight">ExcelMind</span>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3"><a
+                    class="flex items-center gap-1.5 text-[12px] font-medium text-on-surface-variant hover:text-on-surface transition-colors mr-2"
+                    href="#">
+                    <span class="material-symbols-outlined text-[18px]" data-icon="arrow_back">arrow_back</span>
+                    <span class="">Back to Chat</span>
+                </a>
+                <span
+                    class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-on-surface transition-colors text-[18px]"
+                    data-icon="help">help</span>
+                <span
+                    class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-on-surface transition-colors text-[18px]"
+                    data-icon="notifications">notifications</span>
+            </div>
+        </div>
+    </header>
+    <main class="pt-14 h-screen flex items-center justify-center bg-surface-container-lowest">
+        <!-- Settings Container -->
+        <div
+            class="relative w-full max-w-[1024px] h-[680px] bg-surface border border-outline-variant/30 rounded-lg overflow-hidden flex shadow-2xl">
+            <!-- SideNavBar -->
+            <aside class="w-[240px] bg-surface-container-low/50 border-r border-outline-variant/30 flex flex-col">
+                <div class="p-5">
+                    <h2 class="text-[16px] font-semibold text-on-surface mb-5">Settings</h2>
+                    <nav class="space-y-6">
+                        <!-- General Group -->
+                        <div>
+                            <p class="font-label-caps text-label-caps text-on-surface-variant/70 mb-2 px-2">GENERAL</p>
+                            <ul class="space-y-[2px]">
+                                <li
+                                    class="flex items-center px-2 py-1.5 text-[13px] font-medium text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface cursor-pointer rounded transition-all">
+                                    <span class="material-symbols-outlined mr-2.5 text-[16px]"
+                                        data-icon="account_circle">account_circle</span>
+                                    Local Profile</li>
+                                <li
+                                    class="flex items-center px-2 py-1.5 text-[13px] font-medium text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface cursor-pointer rounded transition-all">
+                                    <span class="material-symbols-outlined mr-2.5 text-[16px]"
+                                        data-icon="palette">palette</span>
+                                    Appearance
+                                </li>
+                                <li
+                                    class="flex items-center px-2 py-1.5 text-[13px] font-medium text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface cursor-pointer rounded transition-all">
+                                    <span class="material-symbols-outlined mr-2.5 text-[16px]"
+                                        data-icon="notifications">notifications</span>
+                                    Notifications
+                                </li>
+                                <li
+                                    class="flex items-center px-2 py-1.5 text-[13px] font-medium text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface cursor-pointer rounded transition-all">
+                                    <span class="material-symbols-outlined mr-2.5 text-[16px]"
+                                        data-icon="keyboard">keyboard</span>
+                                    Shortcuts
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Workspace Group -->
+                        <div>
+                            <p class="font-label-caps text-label-caps text-on-surface-variant/70 mb-2 px-2">WORKSPACE
+                            </p>
+                            <ul class="space-y-[2px]">
+                                <li
+                                    class="flex items-center px-2 py-1.5 text-[13px] font-medium text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface cursor-pointer rounded transition-all">
+                                    <span class="material-symbols-outlined mr-2.5 text-[16px]"
+                                        data-icon="table_view">table_view</span>
+                                    Excel connection
+                                </li>
+                                <li
+                                    class="flex items-center px-2 py-1.5 text-[13px] font-medium bg-surface-container-highest/80 text-on-surface rounded transition-all shadow-sm border border-outline-variant/20">
+                                    <span class="material-symbols-outlined mr-2.5 text-[16px]"
+                                        data-icon="psychology">psychology</span>
+                                    AI behavior
+                                </li>
+                                <li
+                                    class="flex items-center px-2 py-1.5 text-[13px] font-medium text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface cursor-pointer rounded transition-all">
+                                    <span class="material-symbols-outlined mr-2.5 text-[16px]"
+                                        data-icon="lock">lock</span>
+                                    Privacy &amp; data
+                                </li>
+                                <li
+                                    class="flex items-center px-2 py-1.5 text-[13px] font-medium text-on-surface-variant hover:bg-surface-container-highest/50 hover:text-on-surface cursor-pointer rounded transition-all">
+                                    <span class="material-symbols-outlined mr-2.5 text-[16px]"
+                                        data-icon="hub">hub</span>
+                                    Integrations
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </div>
+                <div class="mt-auto p-5 border-t border-outline-variant/30">
+                    <p class="font-mono text-mono-small text-outline/60 tracking-wider">VERSION 2.4.1-STABLE</p>
+                </div>
+            </aside>
+            <!-- Right Content Panel -->
+            <section class="flex-1 overflow-y-auto bg-surface p-8">
+                <div class="max-w-[640px] mx-auto">
+                    <header class="mb-8 border-b border-outline-variant/20 pb-4">
+                        <h1 class="text-[20px] font-semibold text-on-surface mb-1">AI Behavior</h1>
+                        <p class="text-[13px] text-on-surface-variant/80">Configure how the intelligence layer interacts
+                            with your datasets and provides suggestions.</p>
+                    </header>
+                    <!-- Section: Model -->
+                    <div class="mb-8">
+                        <h3
+                            class="font-label-caps text-label-caps text-on-surface-variant/70 mb-3 uppercase tracking-wider">
+                            Model Configuration</h3>
+                        <div
+                            class="border border-outline-variant/30 rounded-lg bg-surface-container-lowest/50 divide-y divide-outline-variant/20">
+                            <div class="flex items-center justify-between p-4">
+                                <div class="pr-4">
+                                    <p class="text-[13px] font-medium text-on-surface mb-0.5">Active model</p>
+                                    <p class="text-[11px] text-on-surface-variant/70 leading-relaxed">Select the engine
+                                        powering your intelligence.</p>
+                                </div>
+                                <select
+                                    class="bg-surface-container-low border border-outline-variant/40 text-on-surface text-[12px] rounded px-2.5 py-1.5 outline-none focus:border-outline focus:ring-1 focus:ring-outline/50 transition-colors min-w-[140px] cursor-pointer appearance-none">
+                                    <option>ExcelMind Pro</option>
+                                    <option>ExcelMind Lite</option>
+                                    <option>GPT-4 Optimized</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center justify-between p-4">
+                                <div class="pr-4">
+                                    <p class="text-[13px] font-medium text-on-surface mb-0.5">Response language</p>
+                                    <p class="text-[11px] text-on-surface-variant/70 leading-relaxed">Primary language
+                                        for explanations and insights.</p>
+                                </div>
+                                <select
+                                    class="bg-surface-container-low border border-outline-variant/40 text-on-surface text-[12px] rounded px-2.5 py-1.5 outline-none focus:border-outline focus:ring-1 focus:ring-outline/50 transition-colors min-w-[140px] cursor-pointer appearance-none">
+                                    <option>Auto-detect</option>
+                                    <option>English (US)</option>
+                                    <option>German</option>
+                                    <option>Japanese</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Section: Behavior -->
+                    <div class="mb-8">
+                        <h3
+                            class="font-label-caps text-label-caps text-on-surface-variant/70 mb-3 uppercase tracking-wider">
+                            Interactive Behavior</h3>
+                        <div
+                            class="border border-outline-variant/30 rounded-lg bg-surface-container-lowest/50 divide-y divide-outline-variant/20">
+                            <div class="flex items-center justify-between p-4">
+                                <div class="pr-4">
+                                    <p class="text-[13px] font-medium text-on-surface mb-0.5">Action preview</p>
+                                    <p class="text-[11px] text-on-surface-variant/70 leading-relaxed">Show visual
+                                        highlight before applying changes.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input checked="" class="sr-only peer" type="checkbox" />
+                                    <div
+                                        class="custom-toggle bg-surface-variant border border-outline-variant/50 peer-checked:bg-primary peer-checked:border-primary transition-all">
+                                        <div
+                                            class="custom-toggle-dot absolute top-[1px] left-[1px] bg-on-surface peer-checked:bg-background shadow-sm transition-all">
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between p-4">
+                                <div class="pr-4">
+                                    <p class="text-[13px] font-medium text-on-surface mb-0.5">Auto-suggest</p>
+                                    <p class="text-[11px] text-on-surface-variant/70 leading-relaxed">Predict formulas
+                                        as you type in the grid.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input checked="" class="sr-only peer" type="checkbox" />
+                                    <div
+                                        class="custom-toggle bg-surface-variant border border-outline-variant/50 peer-checked:bg-primary peer-checked:border-primary transition-all">
+                                        <div
+                                            class="custom-toggle-dot absolute top-[1px] left-[1px] bg-on-surface peer-checked:bg-background shadow-sm transition-all">
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between p-4">
+                                <div class="pr-4">
+                                    <p class="text-[13px] font-medium text-on-surface mb-0.5">Formula explanations</p>
+                                    <p class="text-[11px] text-on-surface-variant/70 leading-relaxed">Briefly describe
+                                        the logic of complex formulas.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input checked="" class="sr-only peer" type="checkbox" />
+                                    <div
+                                        class="custom-toggle bg-surface-variant border border-outline-variant/50 peer-checked:bg-primary peer-checked:border-primary transition-all">
+                                        <div
+                                            class="custom-toggle-dot absolute top-[1px] left-[1px] bg-on-surface peer-checked:bg-background shadow-sm transition-all">
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between p-4">
+                                <div class="pr-4">
+                                    <p class="text-[13px] font-medium text-on-surface mb-0.5">Streaming responses</p>
+                                    <p class="text-[11px] text-on-surface-variant/70 leading-relaxed">Display AI output
+                                        character-by-character.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input checked="" class="sr-only peer" type="checkbox" />
+                                    <div
+                                        class="custom-toggle bg-surface-variant border border-outline-variant/50 peer-checked:bg-primary peer-checked:border-primary transition-all">
+                                        <div
+                                            class="custom-toggle-dot absolute top-[1px] left-[1px] bg-on-surface peer-checked:bg-background shadow-sm transition-all">
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Section: Context -->
+                    <div class="mb-8">
+                        <h3
+                            class="font-label-caps text-label-caps text-on-surface-variant/70 mb-3 uppercase tracking-wider">
+                            Context &amp; Range</h3>
+                        <div
+                            class="border border-outline-variant/30 rounded-lg bg-surface-container-lowest/50 divide-y divide-outline-variant/20">
+                            <div class="flex items-center justify-between p-4">
+                                <div class="pr-4">
+                                    <p class="text-[13px] font-medium text-on-surface mb-0.5">Active sheet context</p>
+                                    <p class="text-[11px] text-on-surface-variant/70 leading-relaxed">Allow AI to read
+                                        current sheet data.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input checked="" class="sr-only peer" type="checkbox" />
+                                    <div
+                                        class="custom-toggle bg-surface-variant border border-outline-variant/50 peer-checked:bg-primary peer-checked:border-primary transition-all">
+                                        <div
+                                            class="custom-toggle-dot absolute top-[1px] left-[1px] bg-on-surface peer-checked:bg-background shadow-sm transition-all">
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between p-4">
+                                <div class="pr-4">
+                                    <p class="text-[13px] font-medium text-on-surface mb-0.5">Workbook name</p>
+                                    <p class="text-[11px] text-on-surface-variant/70 leading-relaxed">Include filename
+                                        in context for specific tasks.</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input checked="" class="sr-only peer" type="checkbox" />
+                                    <div
+                                        class="custom-toggle bg-surface-variant border border-outline-variant/50 peer-checked:bg-primary peer-checked:border-primary transition-all">
+                                        <div
+                                            class="custom-toggle-dot absolute top-[1px] left-[1px] bg-on-surface peer-checked:bg-background shadow-sm transition-all">
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between p-4">
+                                <div class="pr-4">
+                                    <p class="text-[13px] font-medium text-on-surface mb-0.5">Max context rows</p>
+                                    <p class="text-[11px] text-on-surface-variant/70 leading-relaxed">The maximum data
+                                        depth the AI analyzes.</p>
+                                </div>
+                                <select
+                                    class="bg-surface-container-low border border-outline-variant/40 text-on-surface text-[12px] rounded px-2.5 py-1.5 outline-none focus:border-outline focus:ring-1 focus:ring-outline/50 transition-colors min-w-[100px] cursor-pointer appearance-none">
+                                    <option>100</option>
+                                    <option selected="">500</option>
+                                    <option>1000</option>
+                                    <option>5000</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-end gap-3 mt-8 pb-8">
+                        <button
+                            class="px-4 py-1.5 text-[12px] font-medium text-on-surface-variant border border-outline-variant/30 rounded hover:bg-surface-container-highest/50 hover:text-on-surface transition-all">Reset</button>
+                        <button
+                            class="px-4 py-1.5 text-[12px] font-medium bg-primary text-background rounded hover:opacity-90 active:scale-95 transition-all shadow-sm">Save
+                            Changes</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- Disclaimer -->
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 text-[11px] text-outline/50">
+            <span class="material-symbols-outlined text-[12px]" data-icon="info">info</span>
+            <span class="">Settings apply to the current workspace across all devices.</span>
+        </div>
+    </main>
+    <script>
+        // Simple interactivity for selects and toggles
+        document.querySelectorAll('select').forEach(select => {
+            select.addEventListener('change', (e) => {
+                console.log(`Setting changed: ${e.target.value}`);
+            });
+        });
+
+        document.querySelectorAll('input[type="checkbox"]').forEach(toggle => {
+            toggle.addEventListener('change', (e) => {
+                console.log(`Toggle changed: ${e.target.checked}`);
+            });
+        });
+    </script>
+</body>
+
+</html>

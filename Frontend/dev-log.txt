@@ -1,0 +1,64 @@
+[36mvite v5.4.21 [32mbuilding SSR bundle for development...[36m[39m
+transforming...
+[32m✓[39m 1 modules transformed.
+rendering chunks...
+[2mout/main/[22m[36mindex.js  [39m[1m[2m4.26 kB[22m[1m[22m
+[32m✓ built in 247ms[39m
+[32m
+build the electron main process successfully[39m
+[90m
+-----
+[39m
+[36mvite v5.4.21 [32mbuilding SSR bundle for development...[36m[39m
+transforming...
+[32m✓[39m 1 modules transformed.
+rendering chunks...
+[2mout/preload/[22m[36mindex.mjs  [39m[1m[2m0.66 kB[22m[1m[22m
+[32m✓ built in 7ms[39m
+[32m
+build the electron preload files successfully[39m
+[90m
+-----
+[39m
+Port 5173 is in use, trying another one...
+[32mdev server running for the electron renderer process at:
+[39m
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5174[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[32m
+start electron app...
+[39m
+
+[20904:0530/221252.289:ERROR:cache_util_win.cc(20)] Unable to move the cache: Access is denied. (0x5)
+[20904:0530/221252.289:ERROR:cache_util_win.cc(20)] Unable to move the cache: Access is denied. (0x5)
+[20904:0530/221252.289:ERROR:cache_util_win.cc(20)] Unable to move the cache: Access is denied. (0x5)
+[20904:0530/221252.291:ERROR:disk_cache.cc(208)] Unable to create cache
+[20904:0530/221252.291:ERROR:gpu_disk_cache.cc(711)] Gpu Cache Creation failed: -2
+[20904:0530/221252.291:ERROR:disk_cache.cc(208)] Unable to create cache
+[20904:0530/221252.291:ERROR:gpu_disk_cache.cc(711)] Gpu Cache Creation failed: -2
+[20904:0530/221252.291:ERROR:disk_cache.cc(208)] Unable to create cache
+[20904:0530/221252.291:ERROR:gpu_disk_cache.cc(711)] Gpu Cache Creation failed: -2
+[Backend ERR] INFO:     Started server process [21388]
+INFO:     Waiting for application startup.
+
+[Backend ERR] INFO:main_server:Initializing Excel AI MCP Backend Service...
+
+[Backend ERR] ERROR:excel_connection:Failed to bind to existing Excel app: 'Could not find an Excel instance with this PID.'
+INFO:excel_connection:Starting a new Microsoft Excel instance.
+
+[Backend ERR] INFO:main_server:Excel Connection Manager successfully initialized on startup.
+INFO:     Application startup complete.
+
+[Backend ERR] ERROR:    [Errno 10048] error while attempting to bind on address ('127.0.0.1', 8000): [winerror 10048] only one usage of each socket address (protocol/network address/port) is normally permitted
+INFO:     Waiting for application shutdown.
+
+[Backend ERR] INFO:main_server:Shutting down Excel AI MCP Backend Service...
+
+[Backend ERR] INFO:excel_connection:Disconnected and closed Microsoft Excel instance.
+INFO:main_server:Excel connection released and disconnected.
+
+[Backend ERR] INFO:     Application shutdown complete.
+
+[Backend] process exited with code 1
+[20904:0530/221258.609:ERROR:CONSOLE(1)] "Request Autofill.enable failed. {"code":-32601,"message":"'Autofill.enable' wasn't found"}", source: devtools://devtools/bundled/core/protocol_client/protocol_client.js (1)
+[20904:0530/221258.609:ERROR:CONSOLE(1)] "Request Autofill.setAddresses failed. {"code":-32601,"message":"'Autofill.setAddresses' wasn't found"}", source: devtools://devtools/bundled/core/protocol_client/protocol_client.js (1)

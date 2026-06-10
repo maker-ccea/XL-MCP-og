@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "target": "ES2022"
+  },
+  "include": [
+    "electron.vite.config.*",
+    "electron/**/*",
+    "tailwind.config.*",
+    "postcss.config.*"
+  ]
+}

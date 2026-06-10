@@ -1,0 +1,69 @@
+# Dependency directories
+node_modules/
+jspm_packages/
+web_modules/
+
+# Compiled files and build outputs
+out/
+dist/
+build/
+bin/
+obj/
+release/
+.vite-inspect/
+
+# Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+active_env/
+conda-env/
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.claude/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Local configuration / API keys
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+
+# Application runtime cache / temp directories
+.eslintcache
+.stylelintcache
+.parcel-cache
+.cache-loader

@@ -1,0 +1,35 @@
+{
+  "name": "excelmind-frontend",
+  "version": "1.0.0",
+  "description": "AI-powered Excel workspace desktop application",
+  "type": "module",
+  "main": "out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "autoprefixer": "^10.4.19",
+    "electron": "^31.7.7",
+    "electron-builder": "^24.13.3",
+    "electron-vite": "^2.3.0",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.4.5",
+    "vue-tsc": "^2.0.26"
+  },
+  "dependencies": {
+    "@lucide/vue": "^1.17.0",
+    "@tanstack/vue-query": "^5.45.1",
+    "@vueuse/core": "^10.11.0",
+    "axios": "^1.7.2",
+    "marked": "^13.0.0",
+    "pinia": "^2.1.7",
+    "simple-icons": "^16.21.0",
+    "vue": "^3.4.29",
+    "vue-router": "^4.3.3"
+  }
+}

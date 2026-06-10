@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ExcelMind Workspace</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script
+        id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "on-primary-fixed-variant": "#474746", "on-primary-container": "#858383", "on-secondary-fixed-variant": "#474741", "tertiary-container": "#1c1b1a", "surface-container": "#eceef1", "primary-fixed-dim": "#c8c6c5", "on-secondary-container": "#63635c", "on-error": "#ffffff", "inverse-on-surface": "#eff1f4", "surface-variant": "#e0e3e6", "on-primary": "#ffffff", outline: "#747878", "on-tertiary-container": "#868382", "surface-container-highest": "#e0e3e6", "on-tertiary-fixed-variant": "#484645", "inverse-surface": "#2d3133", "surface-bright": "#f7f9fc", tertiary: "#000000", "surface-dim": "#d8dadd", "error-container": "#ffdad6", "on-tertiary": "#ffffff", secondary: "#5f5f58", "secondary-container": "#e2e0d7", background: "#f7f9fc", "on-primary-fixed": "#1c1b1b", "inverse-primary": "#c8c6c5", "on-surface": "#191c1e", primary: "#000000", "tertiary-fixed": "#e6e2df", "primary-container": "#1c1b1b", error: "#ba1a1a", "on-secondary": "#ffffff", "on-background": "#191c1e", "surface-container-high": "#e6e8eb", surface: "#f7f9fc", "surface-tint": "#5f5e5e", "secondary-fixed-dim": "#c8c6bf", "on-tertiary-fixed": "#1c1b1a", "surface-container-low": "#f2f4f7", "surface-container-lowest": "#ffffff", "on-error-container": "#93000a", "outline-variant": "#c4c7c7", "tertiary-fixed-dim": "#cac6c4", "on-secondary-fixed": "#1c1c17", "on-surface-variant": "#444748", "primary-fixed": "#e5e2e1", "secondary-fixed": "#e5e2da" }, borderRadius: { DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem" }, spacing: { "margin-mobile": "20px", "container-max-width": "800px", "margin-desktop": "40px", unit: "8px", "card-padding": "16px", gutter: "16px" }, fontFamily: { "card-body": ["Inter"], "label-caps": ["Inter"], "body-main": ["Inter"], "card-title": ["Inter"], "display-welcome": ["Inter"], headline: ["Inter"], display: ["Inter"], body: ["Inter"], label: ["Inter"] }, fontSize: { "card-body": ["12px", { lineHeight: "1.5", letterSpacing: "0", fontWeight: "400" }], "label-caps": ["11px", { lineHeight: "1", letterSpacing: "0.05em", fontWeight: "600" }], "body-main": ["15px", { lineHeight: "1.6", letterSpacing: "0", fontWeight: "400" }], "card-title": ["13px", { lineHeight: "1.4", letterSpacing: "0.01em", fontWeight: "500" }], "display-welcome": ["28px", { lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "400" }] } } } };</script>
+    <style>
+        .custom-border-light {
+            border-color: #d3d1c7;
+        }
+
+        .custom-border-divider {
+            border-color: #f0ede8;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+
+<body class="bg-background font-body-main text-on-surface antialiased h-screen flex flex-col overflow-hidden">
+    <!-- TopNavBar Shell (Suppressed contextually if this was a modal, but standard here) -->
+    <!-- Navigating logic: "Library", "Teams", "History" not exact match, intent fallback to none active since it's a welcome screen -->
+    <header class="flex justify-between items-center px-8 h-16 w-full shrink-0 z-10">
+        <div class="flex items-center gap-4">
+            <button
+                class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-md transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined">search</span>
+            </button>
+            <button
+                class="flex items-center gap-2 px-3 py-1.5 text-on-surface border border-transparent hover:bg-surface-variant rounded-md transition-colors font-card-title text-card-title">
+                <span class="material-symbols-outlined" style="font-size: 18px;">add</span>
+                New Chat
+            </button>
+        </div>
+        <div
+            class="font-display-welcome text-display-welcome font-semibold text-primary absolute left-1/2 -translate-x-1/2">
+            Workspace
+        </div>
+        <div class="flex items-center gap-4">
+            <button
+                class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-md transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined">side_navigation</span>
+            </button>
+            <button
+                class="flex items-center gap-2 px-3 py-1.5 text-on-surface border border-outline-variant hover:bg-surface-container-high rounded-md transition-colors font-card-title text-card-title">
+                <span class="material-symbols-outlined" style="font-size: 18px;">share</span>
+                Share
+            </button>
+            <button
+                class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-md transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined">settings</span>
+            </button>
+        </div>
+    </header>
+    <!-- Main Workspace Area -->
+    <main class="flex-1 px-8 pb-8 flex flex-col min-h-0">
+        <!-- White Card Wrapper -->
+        <div class="bg-surface rounded-2xl flex-1 flex flex-col relative overflow-hidden shadow-sm">
+            <!-- Scrollable Content Area -->
+            <div class="flex-1 overflow-y-auto flex flex-col items-center pt-24 pb-32">
+                <!-- Welcome Section -->
+                <div class="flex flex-col items-center text-center max-w-container-max-width px-4">
+                    <!-- Sparkle Icon -->
+                    <div
+                        class="w-[52px] h-[52px] rounded-full bg-background border border-custom-border-light flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-secondary text-[24px]">auto_awesome</span>
+                    </div>
+                    <!-- Greeting -->
+                    <h1 class="font-display-welcome text-display-welcome text-on-surface mb-2">
+                        Good morning, <span class="text-on-surface-variant">Mohab</span>
+                    </h1>
+                    <p class="font-body-main text-body-main text-on-surface-variant mb-12">
+                        Hey there! What can I do for your spreadsheet today?
+                    </p>
+                </div>
+                <!-- Quick-Action Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-[620px] px-4">
+                    <!-- Card 1 -->
+                    <div
+                        class="bg-surface-container-low border border-outline-variant rounded-xl p-[18px_16px_14px] flex flex-col hover:border-custom-border-light transition-colors group cursor-pointer">
+                        <div class="mb-3">
+                            <span class="material-symbols-outlined text-secondary text-[20px]">table</span>
+                        </div>
+                        <h3 class="font-card-title text-card-title text-on-surface mb-1">How's my spreadsheet?</h3>
+                        <p class="font-card-body text-card-body text-on-surface-variant flex-1 mb-4">
+                            Get a quick overview of your workbook's data, structure, and key stats.
+                        </p>
+                        <button
+                            class="w-full bg-surface border border-custom-border-light rounded-lg py-2 font-card-title text-card-title text-on-surface hover:bg-surface-container-high transition-colors text-center">
+                            View report
+                        </button>
+                    </div>
+                    <!-- Card 2 -->
+                    <div
+                        class="bg-surface-container-low border border-outline-variant rounded-xl p-[18px_16px_14px] flex flex-col hover:border-custom-border-light transition-colors group cursor-pointer">
+                        <div class="mb-3">
+                            <span class="material-symbols-outlined text-secondary text-[20px]">monetization_on</span>
+                        </div>
+                        <h3 class="font-card-title text-card-title text-on-surface mb-1">Any spend issues?</h3>
+                        <p class="font-card-body text-card-body text-on-surface-variant flex-1 mb-4">
+                            Identify sudden spikes or dips in data and get suggestions to fix them.
+                        </p>
+                        <button
+                            class="w-full bg-surface border border-custom-border-light rounded-lg py-2 font-card-title text-card-title text-on-surface hover:bg-surface-container-high transition-colors text-center">
+                            Analyze data
+                        </button>
+                    </div>
+                    <!-- Card 3 -->
+                    <div
+                        class="bg-surface-container-low border border-outline-variant rounded-xl p-[18px_16px_14px] flex flex-col hover:border-custom-border-light transition-colors group cursor-pointer">
+                        <div class="mb-3">
+                            <span class="material-symbols-outlined text-secondary text-[20px]">my_location</span>
+                        </div>
+                        <h3 class="font-card-title text-card-title text-on-surface mb-1">Which formula works best?</h3>
+                        <p class="font-card-body text-card-body text-on-surface-variant flex-1 mb-4">
+                            See formula suggestions based on your data structure and goals.
+                        </p>
+                        <button
+                            class="w-full bg-surface border border-custom-border-light rounded-lg py-2 font-card-title text-card-title text-on-surface hover:bg-surface-container-high transition-colors text-center">
+                            View insights
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Fixed Input Bar Area -->
+            <div
+                class="absolute bottom-0 left-0 right-0 border-t border-custom-border-divider bg-surface/95 backdrop-blur-sm p-[16px_20px_20px]">
+                <div
+                    class="max-w-[800px] mx-auto flex items-center bg-surface border border-custom-border-light rounded-full p-2 pl-3 shadow-[0_2px_4px_rgba(0,0,0,0.02)] focus-within:border-on-surface transition-colors">
+                    <button
+                        class="w-[28px] h-[28px] rounded-full bg-background flex items-center justify-center hover:bg-surface-container-high transition-colors shrink-0 text-on-surface-variant">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
+                    </button>
+                    <button
+                        class="w-[28px] h-[28px] rounded-full flex items-center justify-center hover:bg-surface-variant transition-colors shrink-0 ml-1 text-on-surface-variant">
+                        <span class="material-symbols-outlined text-[18px]">timer</span>
+                    </button><button
+                        class="flex items-center gap-1.5 h-[28px] px-2 rounded-full hover:bg-surface-variant transition-colors shrink-0 ml-1 text-on-surface-variant">
+                        <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+                        <span class="text-[13px] font-medium">ExcelMind Pro</span>
+                        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                    </button>
+                    <div class="w-[1px] h-5 bg-outline-variant mx-3 shrink-0"></div>
+                    <input
+                        class="flex-1 bg-transparent border-none focus:ring-0 p-0 font-body-main text-body-main placeholder:text-[#B4B2A9] text-on-surface min-w-0"
+                        placeholder="Write a message here..." type="text" />
+                    <button
+                        class="w-[30px] h-[30px] rounded-full bg-primary flex items-center justify-center hover:opacity-90 transition-opacity shrink-0 ml-2">
+                        <span class="material-symbols-outlined text-on-primary text-[16px]"
+                            style="font-variation-settings: 'wght' 600;">arrow_upward</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>
