@@ -9,6 +9,7 @@ export type ProviderID =
   | 'ollama'
   | 'together'
   | 'perplexity'
+  | 'custom'
 
 export type ApiFormat = 'openai' | 'anthropic' | 'google'
 
@@ -29,9 +30,9 @@ export interface ProviderDefinition {
   apiKeyPlaceholder: string
   apiKeyLink: string
   abbr: string
-  color: string       // Tailwind bg-* class for icon
-  textColor: string   // Tailwind text-* class for icon text
-  badgeColor: string  // Tailwind class for status dots
+  color: string       
+  textColor: string   
+  badgeColor: string  
   models: ProviderModel[]
   supportsCustomBaseUrl: boolean
   customBaseUrlLabel?: string
@@ -240,6 +241,24 @@ export const PROVIDERS: ProviderDefinition[] = [
       { id: 'codellama',    name: 'Code Llama',     contextLength: 100000, description: 'Code-specialized Llama' },
       { id: 'phi3',         name: 'Phi-3',          contextLength: 128000, description: 'Microsoft Phi-3 small' },
       { id: 'gemma2',       name: 'Gemma 2',        contextLength: 8192,   description: 'Google Gemma 2 local' }
+    ]
+  },
+  {
+    id: 'custom',
+    name: 'Custom OpenAI Compatible',
+    tagline: 'Connect to any OpenAI-compatible API endpoint',
+    baseUrl: 'https://api.your-provider.com/v1',
+    apiFormat: 'openai',
+    apiKeyPlaceholder: 'Enter API Key if required...',
+    apiKeyLink: '#',
+    abbr: 'Cu',
+    color: 'bg-purple-100',
+    textColor: 'text-purple-700',
+    badgeColor: 'bg-purple-500',
+    supportsCustomBaseUrl: true,
+    customBaseUrlLabel: 'API Base URL',
+    models: [
+      { id: 'custom-model', name: 'Custom Model', contextLength: 4096, description: 'User-specified model ID' }
     ]
   }
 ]

@@ -19,19 +19,26 @@ const defaults: AppSettings = {
   activeSheetContext: true,
   workbookNameContext: true,
   maxContextRows: 500,
-  apiKey: ''
+  apiKey: '',
+  shortcuts: {
+    toggleSidebar: 'Control+b',
+    clearChat: 'Control+l',
+    commandPalette: 'Control+k',
+    toggleExcel: 'Control+e'
+  }
 }
 
 export const settingsService = {
   load(): AppSettings {
     try {
       const raw = localStorage.getItem(STORAGE_KEY)
-      if (!raw) return { ...defaults, profile: { ...defaults.profile } }
+      if (!raw) return { ...defaults, profile: { ...defaults.profile }, shortcuts: { ...defaults.shortcuts } }
       const parsed = JSON.parse(raw)
       return {
         ...defaults,
         ...parsed,
-        profile: { ...defaults.profile, ...parsed.profile }
+        profile: { ...defaults.profile, ...parsed.profile },
+        shortcuts: { ...defaults.shortcuts, ...parsed.shortcuts }
       }
     } catch {
       return { ...defaults, profile: { ...defaults.profile } }
@@ -44,6 +51,6 @@ export const settingsService = {
 
   reset(): AppSettings {
     localStorage.removeItem(STORAGE_KEY)
-    return { ...defaults, profile: { ...defaults.profile } }
+    return { ...defaults, profile: { ...defaults.profile }, shortcuts: { ...defaults.shortcuts } }
   }
 }

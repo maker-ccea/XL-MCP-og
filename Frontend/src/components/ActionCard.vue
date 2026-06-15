@@ -1,8 +1,9 @@
-﻿<script setup lang="ts">
-import { computed } from 'vue'
-import { CheckCircle2, XCircle, ChevronDown, ChevronRight } from '@lucide/vue'
-import { ref } from 'vue'
+<script setup lang="ts">
+import { computed, ref } from 'vue'
+import { CheckCircle2, XCircle, ChevronDown, ChevronRight, RotateCcw } from '@lucide/vue'
 import type { ActionResult, ActionPreview } from '@/types'
+import { excelService } from '@/services/excelService'
+import { useExcelStore } from '@/stores/excelStore'
 
 interface Props {
   result?: ActionResult
@@ -13,6 +14,32 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), { mode: 'result' })
 
 const expanded = ref(false)
+const undone = ref(false)
+const undoing = ref(false)
+const excelStore = useExcelStore()
+
+const canUndo = computed(() => {
+  return props.mode === 'result' && 
+         success.value && 
+         props.result?.action_id && 
+         !undone.value && 
+         ['write_cell', 'write_range', 'clear_cells', 'apply_formula', 'fill_formula', 'remove_formula', 'set_bold', 'set_italic', 'set_font_size', 'set_font_color', 'set_background_color'].includes(props.result.action_type)
+})
+
+async function performUndo(e: Event) {
+  e.stopPropagation()
+  if (!props.result?.action_id || undoing.value) return
+  undoing.value = true
+  try {
+    await excelService.undoAction(props.result.action_id)
+    undone.value = true
+    await excelStore.refreshState()
+  } catch (err) {
+    console.error('Failed to undo action:', err)
+  } finally {
+    undoing.value = false
+  }
+}
 
 function formatActionName(action: string): string {
   return action.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
@@ -56,17 +83,32 @@ const detail = computed(() => {
         : 'border-red-200 bg-red-50'
     ]"
   >
-    <button
-      class="w-full flex items-center gap-2 px-3 py-2 text-left"
-      @click="expanded = !expanded"
-    >
-      <CheckCircle2 v-if="success" :size="14" class="text-emerald-600 shrink-0" />
-      <XCircle v-else :size="14" class="text-red-500 shrink-0" />
-      <span :class="['text-card-title flex-1', success ? 'text-emerald-800' : 'text-red-800']">
-        {{ actionName }}
-      </span>
-      <component :is="expanded ? ChevronDown : ChevronRight" :size="13" :class="success ? 'text-emerald-500' : 'text-red-400'" />
-    </button>
+    <div class="w-full flex items-center justify-between px-3 py-2">
+      <div
+        class="flex items-center gap-2 cursor-pointer flex-1"
+        @click="expanded = !expanded"
+      >
+        <CheckCircle2 v-if="success" :size="14" class="text-emerald-600 shrink-0" />
+        <XCircle v-else :size="14" class="text-red-500 shrink-0" />
+        <span :class="['text-card-title', success ? 'text-emerald-800' : 'text-red-800']">
+          {{ actionName }}
+        </span>
+        <span v-if="undone" class="text-[10px] bg-emerald-200 text-emerald-800 px-1.5 py-0.5 rounded font-medium ml-2">Undone</span>
+        <component :is="expanded ? ChevronDown : ChevronRight" :size="13" :class="[success ? 'text-emerald-500' : 'text-red-400', 'ml-1']" />
+      </div>
+
+      
+      <button
+        v-if="canUndo"
+        :disabled="undoing"
+        @click="performUndo"
+        class="p-1 px-2 rounded hover:bg-emerald-200 text-emerald-700 disabled:opacity-40 transition-all flex items-center gap-1 text-[11px] font-medium"
+        title="Undo this action in Excel"
+      >
+        <RotateCcw :size="11" :class="undoing ? 'animate-spin' : ''" />
+        Undo
+      </button>
+    </div>
 
     <Transition name="expand">
       <div v-if="expanded && detail" class="px-3 pb-2.5 pt-0">

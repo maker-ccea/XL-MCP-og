@@ -4,6 +4,7 @@ import { PROVIDER_MAP } from '@/config/providers'
 export interface ProviderChatMessage {
   role: 'user' | 'assistant' | 'system'
   content: string
+  imageUrl?: string
 }
 
 export interface TestResult {
@@ -18,7 +19,7 @@ export interface ParsedAIResponse {
   actions: Record<string, unknown>[] | null
 }
 
-// ─── System prompt ────────────────────────────────────────────────────────────
+
 
 export const EXCEL_SYSTEM_PROMPT = `You are XL-MCP, an expert AI assistant integrated with Microsoft Excel. You help users analyze spreadsheet data, write formulas, automate tasks, and perform operations through natural language.
 
@@ -56,8 +57,8 @@ Available actions:
 
 For analysis, explanations, formula suggestions, or questions that don't require modifying Excel, respond conversationally without an actions block.`
 
-// ─── IPC bridge ───────────────────────────────────────────────────────────────
-// All requests go through Electron main process to avoid CORS restrictions.
+
+
 
 async function ipcPost(
   url: string,
@@ -78,7 +79,7 @@ async function ipcPost(
   return result.data
 }
 
-// ─── Provider-specific call builders ─────────────────────────────────────────
+
 
 async function callOpenAI(
   messages: ProviderChatMessage[],
@@ -86,12 +87,29 @@ async function callOpenAI(
   apiKey: string,
   baseUrl: string
 ): Promise<string> {
+  const headers: Record<string, string> = {}
+  if (apiKey && apiKey.trim().length > 0) {
+    headers.Authorization = `Bearer ${apiKey}`
+  }
+  const formattedMessages = messages.map((m) => {
+    if (m.imageUrl && m.role === 'user') {
+      return {
+        role: m.role,
+        content: [
+          { type: 'text', text: m.content },
+          { type: 'image_url', image_url: { url: m.imageUrl } }
+        ]
+      }
+    }
+    return { role: m.role, content: m.content }
+  })
+
   const data = await ipcPost(
     `${baseUrl}/chat/completions`,
-    { Authorization: `Bearer ${apiKey}` },
+    headers,
     {
       model: modelId,
-      messages: messages.map((m) => ({ role: m.role, content: m.content })),
+      messages: formattedMessages,
       max_tokens: 2048,
       temperature: 0.4
     }
@@ -110,7 +128,33 @@ async function callAnthropic(
   const systemMsg = messages.find((m) => m.role === 'system')?.content ?? ''
   const convoMsgs = messages
     .filter((m) => m.role !== 'system')
-    .map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content }))
+    .map((m) => {
+      if (m.imageUrl && m.role === 'user') {
+        const match = m.imageUrl.match(/^data:([^;]+);base64,(.+)$/)
+        if (match) {
+          const mediaType = match[1]
+          const base64Data = match[2]
+          return {
+            role: 'user' as const,
+            content: [
+              {
+                type: 'image' as const,
+                source: {
+                  type: 'base64' as const,
+                  media_type: mediaType as 'image/jpeg' | 'image/png' | 'image/gif' | 'image/webp',
+                  data: base64Data
+                }
+              },
+              {
+                type: 'text' as const,
+                text: m.content
+              }
+            ]
+          }
+        }
+      }
+      return { role: m.role as 'user' | 'assistant', content: m.content }
+    })
 
   const data = await ipcPost(
     'https://api.anthropic.com/v1/messages',
@@ -139,10 +183,24 @@ async function callGoogle(
   const systemMsg = messages.find((m) => m.role === 'system')?.content ?? ''
   const convoMsgs = messages
     .filter((m) => m.role !== 'system')
-    .map((m) => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }]
-    }))
+    .map((m) => {
+      const parts: Array<Record<string, any>> = [{ text: m.content }]
+      if (m.imageUrl && m.role === 'user') {
+        const match = m.imageUrl.match(/^data:([^;]+);base64,(.+)$/)
+        if (match) {
+          parts.push({
+            inlineData: {
+              mimeType: match[1],
+              data: match[2]
+            }
+          })
+        }
+      }
+      return {
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts
+      }
+    })
 
   const body: Record<string, unknown> = {
     contents: convoMsgs,
@@ -165,7 +223,7 @@ async function callGoogle(
   return text
 }
 
-// ─── Response parser ──────────────────────────────────────────────────────────
+
 
 export function parseAIResponse(raw: string): ParsedAIResponse {
   const actionMatch = raw.match(/```excel-actions\n([\s\S]*?)```/)
@@ -180,7 +238,7 @@ export function parseAIResponse(raw: string): ParsedAIResponse {
     const parsed = JSON.parse(actionMatch[1].trim())
     actions = Array.isArray(parsed) ? parsed : [parsed]
   } catch {
-    // malformed JSON — treat whole response as plain text
+    
   }
 
   return {
@@ -189,7 +247,7 @@ export function parseAIResponse(raw: string): ParsedAIResponse {
   }
 }
 
-// ─── Public API ───────────────────────────────────────────────────────────────
+
 
 export const aiProviderService = {
   async chat(

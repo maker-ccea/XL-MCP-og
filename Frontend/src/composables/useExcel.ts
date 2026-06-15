@@ -13,7 +13,7 @@ export function useExcel() {
       await excelStore.refreshState()
       connect()
     } catch {
-      // backend not yet available
+      
     }
 
     pollInterval = setInterval(async () => {
@@ -23,7 +23,7 @@ export function useExcel() {
           await excelStore.refreshState()
         }
       } catch {
-        // ignore polling errors
+        
       }
     }, 10_000)
   }

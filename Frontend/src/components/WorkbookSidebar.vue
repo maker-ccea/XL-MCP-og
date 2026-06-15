@@ -27,18 +27,18 @@ const navItems = [
 </script>
 
 <template>
-  <!-- Backdrop -->
+  
   <Transition name="fade">
     <div v-if="open" class="fixed inset-0 z-40 bg-black/20 backdrop-blur-[1px]" @click="emit('close')" />
   </Transition>
 
-  <!-- Sidebar Panel -->
+  
   <Transition name="slide">
     <aside
       v-if="open"
       class="fixed left-0 top-0 bottom-0 z-50 w-[260px] bg-surface border-r border-outline-variant/30 flex flex-col shadow-xl"
     >
-      <!-- Header -->
+      
       <div class="flex items-center justify-between px-5 py-4 border-b border-outline-variant/20">
         <span class="text-[15px] font-semibold text-on-surface tracking-tight">XL-MCP</span>
         <button class="p-1.5 rounded-md hover:bg-surface-container-high text-on-surface-variant transition-colors" @click="emit('close')">
@@ -46,7 +46,7 @@ const navItems = [
         </button>
       </div>
 
-      <!-- Excel Status -->
+      
       <div class="px-5 py-3 border-b border-outline-variant/10">
         <div class="flex items-center gap-2 mb-1">
           <component :is="excelStore.isConnected ? Wifi : WifiOff" :size="13" :class="excelStore.isConnected ? 'text-emerald-500' : 'text-on-surface-variant/50'" />
@@ -66,7 +66,7 @@ const navItems = [
         <p v-else class="text-card-body text-on-surface-variant/60 pl-[21px]">No workbook open</p>
       </div>
 
-      <!-- Sheets -->
+      
       <div v-if="excelStore.availableSheets.length > 0" class="px-5 py-3 border-b border-outline-variant/10">
         <p class="text-label-caps text-label-caps text-on-surface-variant/60 uppercase mb-2">Sheets</p>
         <ul class="space-y-0.5">
@@ -86,7 +86,7 @@ const navItems = [
         </ul>
       </div>
 
-      <!-- Nav -->
+      
       <nav class="px-4 py-4 flex-1">
         <p class="text-label-caps text-label-caps text-on-surface-variant/60 uppercase mb-2 px-2">Navigation</p>
         <ul class="space-y-0.5">
@@ -107,7 +107,7 @@ const navItems = [
         </ul>
       </nav>
 
-      <!-- Active AI provider -->
+      
       <div class="px-4 py-3 border-t border-outline-variant/10">
         <p class="text-label-caps text-label-caps text-on-surface-variant/60 uppercase mb-2 px-1">AI Provider</p>
         <div v-if="providersStore.active && providersStore.activeProviderDef"
@@ -131,7 +131,7 @@ const navItems = [
         </div>
       </div>
 
-      <!-- Footer -->
+      
       <div class="px-5 py-3 border-t border-outline-variant/20">
         <p class="font-mono text-mono-small text-outline/50 tracking-wider">VERSION 1.0.0</p>
       </div>

@@ -34,7 +34,7 @@ function statusColor(status: string): string {
 
 <template>
   <div class="h-screen w-screen bg-background flex flex-col items-center justify-center gap-8">
-    <!-- Logo -->
+    
     <div class="flex flex-col items-center gap-4">
       <div class="w-16 h-16 rounded-full bg-surface border border-custom-border-light flex items-center justify-center shadow-sm">
         <Sparkles :size="28" class="text-secondary" />
@@ -45,7 +45,7 @@ function statusColor(status: string): string {
       </div>
     </div>
 
-    <!-- Status checks -->
+    
     <div class="w-[280px] space-y-2">
       <div class="flex items-center justify-between px-4 py-2.5 bg-surface rounded-xl border border-outline-variant/40">
         <span class="text-card-title text-on-surface">Backend server</span>

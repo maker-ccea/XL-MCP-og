@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { BrainCircuit, Zap, Layers, GitMerge } from '@lucide/vue'
+import { BrainCircuit, Zap, Layers, GitMerge, Cpu } from '@lucide/vue'
 import {
   siAnthropic,
   siGooglegemini,
@@ -18,7 +18,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), { size: 18 })
 
-// Brand SVG paths from simple-icons (correct, official paths)
+
 const siIconMap: Partial<Record<ProviderID, { path: string; hex: string }>> = {
   anthropic:  siAnthropic,
   google:     siGooglegemini,
@@ -28,12 +28,13 @@ const siIconMap: Partial<Record<ProviderID, { path: string; hex: string }>> = {
   perplexity: siPerplexity
 }
 
-// Lucide icons for providers not in simple-icons
+
 const lucideIconMap = {
-  openai:    BrainCircuit,  // GPT = intelligence/reasoning
-  groq:      Zap,           // Groq = ultra-fast inference
-  cohere:    Layers,        // Cohere = enterprise data layers
-  together:  GitMerge       // Together = merging/collaboration
+  openai:    BrainCircuit,  
+  groq:      Zap,           
+  cohere:    Layers,        
+  together:  GitMerge,      
+  custom:    Cpu            
 } as Partial<Record<ProviderID, unknown>>
 
 const siIcon    = computed(() => siIconMap[props.id])
@@ -41,7 +42,7 @@ const lucideIcon = computed(() => lucideIconMap[props.id])
 </script>
 
 <template>
-  <!-- Official brand SVG from simple-icons -->
+  
   <svg
     v-if="siIcon"
     :width="size"
@@ -53,7 +54,7 @@ const lucideIcon = computed(() => lucideIconMap[props.id])
     <path :d="siIcon.path" />
   </svg>
 
-  <!-- Lucide fallback for OpenAI / Groq / Cohere / Together -->
+  
   <component
     v-else-if="lucideIcon"
     :is="lucideIcon"

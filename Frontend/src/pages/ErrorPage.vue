@@ -40,7 +40,7 @@ async function retry(): Promise<void> {
       router.push('/')
     }
   } catch {
-    // still failing
+    
   } finally {
     retrying.value = false
   }

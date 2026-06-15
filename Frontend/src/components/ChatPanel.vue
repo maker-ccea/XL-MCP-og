@@ -1,19 +1,25 @@
 <script setup lang="ts">
 import { ref, watch, nextTick, computed } from 'vue'
-import { Plus, Timer, Bot, ChevronDown, ArrowUp, Sparkles, Table, DollarSign, Target } from '@lucide/vue'
+import { Plus, Timer, Bot, ChevronDown, ArrowUp, Sparkles, Table, DollarSign, Target, Mic, MicOff, X } from '@lucide/vue'
 import { useChatStore } from '@/stores/chatStore'
 import { useSettingsStore } from '@/stores/settingsStore'
 import { useProvidersStore } from '@/stores/providersStore'
 import { useChat } from '@/composables/useChat'
+import { useAudioRecorder } from '@/composables/useAudioRecorder'
 import ChatMessage from './ChatMessage.vue'
 import ProviderIcon from './ProviderIcon.vue'
+import DataGridPreview from './DataGridPreview.vue'
 import { useRouter } from 'vue-router'
 
 const chatStore = useChatStore()
 const settingsStore = useSettingsStore()
 const providersStore = useProvidersStore()
 const router = useRouter()
-const { inputText, submit, handleKeydown } = useChat()
+const { inputText, imageUrl, submit, handleKeydown } = useChat()
+
+const { isListening, supported: speechSupported, toggleListening } = useAudioRecorder((text) => {
+  inputText.value = (inputText.value + ' ' + text).trim()
+})
 
 const activeLabel = computed(() => {
   if (providersStore.activeProviderDef) {
@@ -26,6 +32,43 @@ const activeLabel = computed(() => {
 
 const scrollContainer = ref<HTMLElement | null>(null)
 const textarea = ref<HTMLTextAreaElement | null>(null)
+const fileInput = ref<HTMLInputElement | null>(null)
+
+function triggerFileInput() {
+  fileInput.value?.click()
+}
+
+function handleFileChange(event: Event) {
+  const target = event.target as HTMLInputElement
+  const file = target.files?.[0]
+  if (file) {
+    processImageFile(file)
+  }
+}
+
+function processImageFile(file: File) {
+  if (!file.type.startsWith('image/')) return
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    imageUrl.value = e.target?.result as string
+  }
+  reader.readAsDataURL(file)
+}
+
+function handlePaste(event: ClipboardEvent) {
+  const items = event.clipboardData?.items
+  if (!items) return
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      const file = item.getAsFile()
+      if (file) {
+        processImageFile(file)
+        event.preventDefault()
+        break
+      }
+    }
+  }
+}
 
 const greetingPrefix = computed(() => {
   const hour = new Date().getHours()
@@ -87,23 +130,23 @@ watch(() => chatStore.messages.at(-1)?.content, scrollToBottom)
 
 <template>
   <div class="bg-surface rounded-2xl flex-1 flex flex-col relative overflow-hidden shadow-sm">
-    <!-- Scrollable Content -->
+    
     <div ref="scrollContainer" class="flex-1 overflow-y-auto flex flex-col items-center pt-16 pb-36">
-      <!-- Welcome State -->
+      
       <Transition name="fade-up">
         <div v-if="!chatStore.hasMessages" class="flex flex-col items-center text-center max-w-[800px] px-4 w-full">
-          <!-- Icon -->
+          
           <div class="w-[52px] h-[52px] rounded-full bg-background border border-custom-border-light flex items-center justify-center mb-6">
             <Sparkles :size="24" class="text-secondary" />
           </div>
-          <!-- Greeting -->
+          
           <h1 class="font-display-welcome text-display-welcome text-on-surface mb-2">
             {{ greeting }}<span class="text-on-surface-variant">{{ displayName || 'there' }}</span>
           </h1>
           <p class="font-body-main text-body-main text-on-surface-variant mb-12">
             Hey there! What can I do for your spreadsheet today?
           </p>
-          <!-- Quick action cards -->
+          
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-[620px]">
             <div
               v-for="card in quickActions"
@@ -126,7 +169,7 @@ watch(() => chatStore.messages.at(-1)?.content, scrollToBottom)
         </div>
       </Transition>
 
-      <!-- Messages -->
+      
       <div v-if="chatStore.hasMessages" class="w-full max-w-[800px] px-6">
         <ChatMessage
           v-for="message in chatStore.messages"
@@ -136,24 +179,61 @@ watch(() => chatStore.messages.at(-1)?.content, scrollToBottom)
       </div>
     </div>
 
-    <!-- Fixed Input Bar -->
+    
     <div class="absolute bottom-0 left-0 right-0 border-t border-custom-border-divider bg-surface/95 backdrop-blur-sm p-[16px_20px_20px]">
+      <DataGridPreview />
+      
+      
+      <div v-if="imageUrl" class="max-w-[800px] mx-auto mb-3 flex items-center gap-2">
+        <div class="relative w-16 h-16 rounded-xl border border-outline-variant/30 overflow-hidden group shadow-sm bg-surface-container-low">
+          <img :src="imageUrl" class="w-full h-full object-cover" />
+          <button
+            @click="imageUrl = ''"
+            class="absolute top-1 right-1 bg-black/60 hover:bg-black/80 text-white rounded-full p-1 transition-colors shadow"
+          >
+            <X :size="10" />
+          </button>
+        </div>
+      </div>
+
+      <input
+        ref="fileInput"
+        type="file"
+        accept="image/*"
+        class="hidden"
+        @change="handleFileChange"
+      />
+
       <div class="max-w-[800px] mx-auto flex items-end bg-surface border border-custom-border-light rounded-full p-2 pl-3 shadow-[0_2px_4px_rgba(0,0,0,0.02)] focus-within:border-on-surface/50 transition-colors">
-        <!-- Add button -->
-        <button class="w-[28px] h-[28px] rounded-full bg-background flex items-center justify-center hover:bg-surface-container-high transition-colors shrink-0 text-on-surface-variant self-end mb-0.5">
+        
+        <button
+          @click="triggerFileInput"
+          class="w-[28px] h-[28px] rounded-full bg-background flex items-center justify-center hover:bg-surface-container-high transition-colors shrink-0 text-on-surface-variant self-end mb-0.5"
+        >
           <Plus :size="18" />
         </button>
-        <!-- Timer button -->
+        
         <button class="w-[28px] h-[28px] rounded-full flex items-center justify-center hover:bg-surface-variant transition-colors shrink-0 ml-1 text-on-surface-variant self-end mb-0.5">
           <Timer :size="18" />
         </button>
-        <!-- Model selector -->
+        
+        <button
+          v-if="speechSupported"
+          @click="toggleListening"
+          class="w-[28px] h-[28px] rounded-full flex items-center justify-center transition-all shrink-0 ml-1 self-end mb-0.5"
+          :class="isListening ? 'bg-red-100 text-red-600 animate-pulse' : 'hover:bg-surface-variant text-on-surface-variant'"
+          :title="isListening ? 'Listening... Click to stop' : 'Speech-to-Text command input'"
+        >
+          <Mic v-if="!isListening" :size="17" />
+          <MicOff v-else :size="17" />
+        </button>
+        
         <button
           class="flex items-center gap-1.5 h-[28px] px-2 rounded-full hover:bg-surface-variant transition-colors shrink-0 ml-1 self-end mb-0.5"
           :class="providersStore.active ? 'text-primary' : 'text-on-surface-variant'"
           @click="router.push('/settings')"
         >
-          <!-- Show brand icon when provider is active, generic bot otherwise -->
+          
           <ProviderIcon
             v-if="providersStore.active"
             :id="providersStore.active.providerId"
@@ -163,9 +243,9 @@ watch(() => chatStore.messages.at(-1)?.content, scrollToBottom)
           <span class="text-[13px] font-medium max-w-[180px] truncate">{{ activeLabel }}</span>
           <ChevronDown :size="14" />
         </button>
-        <!-- Divider -->
+        
         <div class="w-[1px] h-5 bg-outline-variant mx-3 shrink-0 self-end mb-1" />
-        <!-- Textarea -->
+        
         <textarea
           ref="textarea"
           v-model="inputText"
@@ -176,10 +256,11 @@ watch(() => chatStore.messages.at(-1)?.content, scrollToBottom)
           style="field-sizing: content"
           @keydown="handleKeydown"
           @input="autoResizeTextarea"
+          @paste="handlePaste"
         />
-        <!-- Send button -->
+        
         <button
-          :disabled="!inputText.trim() || chatStore.loading"
+          :disabled="(!inputText.trim() && !imageUrl) || chatStore.loading"
           class="w-[30px] h-[30px] rounded-full bg-primary flex items-center justify-center hover:opacity-90 transition-opacity shrink-0 ml-2 disabled:opacity-40 self-end mb-0.5"
           @click="submit"
         >

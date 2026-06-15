@@ -99,3 +99,92 @@
 .prose-chat li {
   margin-bottom: 0.25em;
 }
+
+/* ─── Custom Workspace Themes ─────────────────────────────────────────── */
+
+/* 1. Nord Theme */
+.theme-nord {
+  --nord0: #2e3440;
+  --nord1: #3b4252;
+  --nord2: #434c5e;
+  --nord3: #4c566a;
+  --nord4: #d8dee9;
+  --nord5: #e5e9f0;
+  --nord6: #eceff4;
+  --nord7: #8fbcbb;
+  --nord8: #88c0d0;
+  --nord9: #81a1c1;
+  --nord10: #5e81ac;
+}
+.theme-nord,
+.theme-nord .bg-surface-container-lowest { background-color: var(--nord0) !important; color: var(--nord6) !important; }
+.theme-nord .bg-surface-container-low { background-color: var(--nord1) !important; }
+.theme-nord .bg-surface { background-color: var(--nord1) !important; }
+.theme-nord .bg-surface-container-high { background-color: var(--nord2) !important; }
+.theme-nord .bg-surface-container-highest { background-color: var(--nord3) !important; }
+.theme-nord .bg-primary { background-color: var(--nord9) !important; }
+.theme-nord .text-on-primary { color: var(--nord0) !important; }
+.theme-nord .text-on-surface { color: var(--nord6) !important; }
+.theme-nord .text-on-surface-variant { color: var(--nord4) !important; }
+.theme-nord .border-outline-variant,
+.theme-nord .border-outline-variant\/30,
+.theme-nord .border-outline-variant\/20,
+.theme-nord .border-custom-border-light { border-color: var(--nord3) !important; }
+.theme-nord .prose-chat pre { background: var(--nord0) !important; color: var(--nord5) !important; }
+.theme-nord .prose-chat code { background: var(--nord2) !important; color: var(--nord6) !important; }
+
+/* 2. Cyberpunk Theme */
+.theme-cyberpunk {
+  --cb-bg: #0d0d0d;
+  --cb-panel: #141414;
+  --cb-border: #ff007f;
+  --cb-neon-yellow: #fcee0a;
+  --cb-neon-cyan: #00f0ff;
+  --cb-text: #00f0ff;
+  --cb-text-muted: #8a2be2;
+}
+.theme-cyberpunk,
+.theme-cyberpunk .bg-surface-container-lowest { background-color: var(--cb-bg) !important; color: var(--cb-text) !important; }
+.theme-cyberpunk .bg-surface-container-low { background-color: var(--cb-panel) !important; }
+.theme-cyberpunk .bg-surface { background-color: var(--cb-panel) !important; }
+.theme-cyberpunk .bg-surface-container-high { background-color: #1a1a1a !important; }
+.theme-cyberpunk .bg-surface-container-highest { background-color: #262626 !important; }
+.theme-cyberpunk .bg-primary { background-color: var(--cb-neon-yellow) !important; }
+.theme-cyberpunk .text-on-primary { color: #000000 !important; }
+.theme-cyberpunk .text-on-surface { color: var(--cb-neon-cyan) !important; }
+.theme-cyberpunk .text-on-surface-variant { color: var(--cb-border) !important; }
+.theme-cyberpunk .border-outline-variant,
+.theme-cyberpunk .border-outline-variant\/30,
+.theme-cyberpunk .border-outline-variant\/20,
+.theme-cyberpunk .border-custom-border-light { border-color: var(--cb-border) !important; }
+.theme-cyberpunk .prose-chat pre { background: #000000 !important; color: var(--cb-neon-yellow) !important; border: 1px solid var(--cb-border); }
+.theme-cyberpunk .prose-chat code { background: #262626 !important; color: var(--cb-neon-yellow) !important; }
+
+/* 3. Forest Green Theme */
+.theme-forest {
+  --forest0: #1c261e;
+  --forest1: #2a382d;
+  --forest2: #384b3c;
+  --forest3: #4b604f;
+  --forest4: #eae7e1;
+  --forest5: #f4f2ee;
+  --forest6: #fbfbfa;
+  --forest-green: #2d5a27;
+}
+.theme-forest,
+.theme-forest .bg-surface-container-lowest { background-color: var(--forest6) !important; color: var(--forest0) !important; }
+.theme-forest .bg-surface-container-low { background-color: var(--forest5) !important; }
+.theme-forest .bg-surface { background-color: var(--forest5) !important; }
+.theme-forest .bg-surface-container-high { background-color: var(--forest4) !important; }
+.theme-forest .bg-surface-container-highest { background-color: var(--forest3) !important; color: var(--forest6) !important; }
+.theme-forest .bg-primary { background-color: var(--forest-green) !important; }
+.theme-forest .text-on-primary { color: var(--forest6) !important; }
+.theme-forest .text-on-surface { color: var(--forest0) !important; }
+.theme-forest .text-on-surface-variant { color: var(--forest3) !important; }
+.theme-forest .border-outline-variant,
+.theme-forest .border-outline-variant\/30,
+.theme-forest .border-outline-variant\/20,
+.theme-forest .border-custom-border-light { border-color: var(--forest4) !important; }
+.theme-forest .prose-chat pre { background: var(--forest0) !important; color: var(--forest5) !important; }
+.theme-forest .prose-chat code { background: var(--forest4) !important; color: var(--forest0) !important; }
+

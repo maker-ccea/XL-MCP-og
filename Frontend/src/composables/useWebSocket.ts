@@ -29,7 +29,7 @@ export function useWebSocket() {
             excelStore.applyWebSocketState(data.state)
           }
         } catch {
-          // ignore malformed messages
+          
         }
       }
 

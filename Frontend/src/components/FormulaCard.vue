@@ -27,19 +27,19 @@ function applyFormula(): void {
 
 <template>
   <div class="rounded-xl border border-outline-variant/40 bg-surface overflow-hidden shadow-sm">
-    <!-- Header -->
+    
     <div class="flex items-center gap-2 px-4 py-3 border-b border-outline-variant/20 bg-surface-container-low/50">
       <Sparkles :size="14" class="text-secondary" />
       <span class="text-card-title text-on-surface font-medium">Formula Suggestion</span>
       <span v-if="targetCell" class="text-card-body text-on-surface-variant ml-auto">→ {{ targetCell }}</span>
     </div>
 
-    <!-- Formula display -->
+    
     <div class="px-4 py-3">
       <pre class="text-[13px] font-mono text-primary bg-surface-container-low rounded-lg px-3 py-2 overflow-x-auto">{{ formula }}</pre>
     </div>
 
-    <!-- Explanation toggle -->
+    
     <div v-if="explanation" class="border-t border-outline-variant/10">
       <button
         class="w-full flex items-center justify-between px-4 py-2.5 text-card-body text-on-surface-variant hover:bg-surface-container-low/50 transition-colors"
@@ -55,7 +55,7 @@ function applyFormula(): void {
       </Transition>
     </div>
 
-    <!-- Actions -->
+    
     <div class="flex items-center gap-2 px-4 py-3 border-t border-outline-variant/10">
       <button
         class="flex items-center gap-1.5 px-3 py-1.5 text-card-title text-on-surface-variant border border-outline-variant/40 rounded-lg hover:bg-surface-container-high transition-colors"

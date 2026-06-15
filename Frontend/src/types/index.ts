@@ -1,10 +1,19 @@
-// --- Backend API Types --------------------------------------------------------
+
+
+export interface SelectionData {
+  headers: string[]
+  row_labels: string[]
+  values: any[][]
+  total_rows: number
+  total_cols: number
+}
 
 export interface WorkbookContext {
   workbook_name: string | null
   sheet_name: string | null
   selected_range: string | null
   available_sheets: string[]
+  selection_data?: SelectionData | null
 }
 
 export interface HealthResponse {
@@ -59,7 +68,7 @@ export interface HistoryEntry {
   status: 'success' | 'partial' | 'failed'
 }
 
-// --- UI Types -----------------------------------------------------------------
+
 
 export type MessageRole = 'user' | 'assistant' | 'system'
 export type MessageStatus = 'sending' | 'streaming' | 'done' | 'error'
@@ -73,9 +82,10 @@ export interface ChatMessage {
   plan?: ActionPreview[]
   results?: ActionResult[]
   allValid?: boolean
+  imageUrl?: string
 }
 
-export type Theme = 'light' | 'dark' | 'system'
+export type Theme = 'light' | 'dark' | 'system' | 'nord' | 'cyberpunk' | 'forest-green'
 export type AIModel = 'xl-mcp-pro' | 'xl-mcp-lite' | 'gpt-4'
 export type AvatarColor = 'zinc' | 'rose' | 'amber' | 'emerald' | 'sky' | 'violet' | 'orange'
 
@@ -84,6 +94,13 @@ export interface LocalProfile {
   role: string
   bio: string
   avatarColor: AvatarColor
+}
+
+export interface KeyboardShortcuts {
+  toggleSidebar: string
+  clearChat: string
+  commandPalette: string
+  toggleExcel: string
 }
 
 export interface AppSettings {
@@ -99,22 +116,18 @@ export interface AppSettings {
   workbookNameContext: boolean
   maxContextRows: number
   apiKey: string
+  shortcuts: KeyboardShortcuts
 }
 
-// Re-export provider types for convenience
+
 export type { ProviderID } from '@/config/providers'
 
 export interface WebSocketStateEvent {
   event: 'state_changed'
-  state: {
-    workbook_name: string | null
-    sheet_name: string | null
-    selected_range: string | null
-    available_sheets: string[]
-  }
+  state: WorkbookContext
 }
 
-// --- Electron API Types -------------------------------------------------------
+
 
 export interface AIRequestOptions {
   url: string

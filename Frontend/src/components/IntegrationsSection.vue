@@ -11,7 +11,7 @@ import ProviderIcon from './ProviderIcon.vue'
 
 const store = useProvidersStore()
 
-// ── Expand/collapse ───────────────────────────────────────────────────────────
+
 
 const expanded = ref<ProviderID | null>(null)
 
@@ -19,7 +19,7 @@ function toggle(id: ProviderID): void {
   expanded.value = expanded.value === id ? null : id
 }
 
-// ── Local edit state (per-provider draft before saving) ───────────────────────
+
 
 const drafts = ref<Record<string, { apiKey: string; model: string; baseUrl: string }>>({})
 
@@ -36,17 +36,17 @@ function getDraft(id: ProviderID) {
   return drafts.value[id]
 }
 
-// When expanded changes, init draft
+
 watch(expanded, (id) => { if (id) getDraft(id) })
 
-// ── Show/hide API key ─────────────────────────────────────────────────────────
+
 
 const showKey = ref<Record<string, boolean>>({})
 function toggleShowKey(id: ProviderID): void {
   showKey.value[id] = !showKey.value[id]
 }
 
-// ── Save config ───────────────────────────────────────────────────────────────
+
 
 function saveConfig(id: ProviderID): void {
   const draft = getDraft(id)
@@ -59,14 +59,14 @@ function saveConfig(id: ProviderID): void {
   })
 }
 
-// ── Test ─────────────────────────────────────────────────────────────────────
+
 
 async function testProvider(id: ProviderID): Promise<void> {
   saveConfig(id)
   await store.testProvider(id)
 }
 
-// ── Set active ────────────────────────────────────────────────────────────────
+
 
 function setActive(id: ProviderID): void {
   const draft = getDraft(id)
@@ -74,7 +74,7 @@ function setActive(id: ProviderID): void {
   store.setActive(id, draft.model)
 }
 
-// ── Status helpers ────────────────────────────────────────────────────────────
+
 
 function statusBadge(id: ProviderID): { label: string; classes: string } {
   if (store.isActive(id)) return { label: 'Active', classes: 'bg-primary text-on-primary' }
@@ -120,13 +120,13 @@ const activeConfig = computed(() => store.activeConfig)
 
 <template>
   <div class="max-w-[640px] mx-auto pb-8">
-    <!-- Header -->
+    
     <header class="mb-6 border-b border-outline-variant/20 pb-4">
       <h1 class="text-[20px] font-semibold text-on-surface mb-1">Integrations</h1>
       <p class="text-[13px] text-on-surface-variant/80">Connect AI providers to power your Excel workspace. Your API keys are stored locally and never leave your device.</p>
     </header>
 
-    <!-- Active Provider Banner -->
+    
     <div v-if="store.active && activeProviderDef" class="mb-6 flex items-center gap-3 px-4 py-3.5 bg-primary/5 border border-primary/20 rounded-xl">
       <div :class="['w-9 h-9 rounded-xl flex items-center justify-center shrink-0', activeProviderDef.color, activeProviderDef.textColor]">
         <ProviderIcon :id="store.active.providerId" :size="20" />
@@ -151,21 +151,21 @@ const activeConfig = computed(() => store.activeConfig)
       <p class="text-[12px] text-on-surface-variant">No AI provider active. Using backend default. Configure a provider below to unlock direct AI access.</p>
     </div>
 
-    <!-- Provider grid -->
+    
     <div class="space-y-2">
       <div v-for="provider in PROVIDERS" :key="provider.id" class="border border-outline-variant/30 rounded-xl overflow-hidden bg-surface transition-colors" :class="{ 'border-primary/30 shadow-sm': expanded === provider.id }">
 
-        <!-- Card header (always visible) -->
+        
         <div
           class="flex items-center gap-3 px-4 py-3.5 cursor-pointer hover:bg-surface-container-low/50 transition-colors select-none"
           @click="toggle(provider.id)"
         >
-          <!-- Provider icon -->
+          
           <div :class="['w-9 h-9 rounded-xl flex items-center justify-center shrink-0', provider.color, provider.textColor]">
             <ProviderIcon :id="provider.id" :size="20" />
           </div>
 
-          <!-- Name + tagline -->
+          
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
               <span class="text-[13px] font-semibold text-on-surface">{{ provider.name }}</span>
@@ -176,21 +176,21 @@ const activeConfig = computed(() => store.activeConfig)
             <p class="text-[11px] text-on-surface-variant/70 truncate">{{ provider.tagline }}</p>
           </div>
 
-          <!-- Status badge -->
+          
           <span :class="['text-[10px] font-semibold px-2 py-0.5 rounded-full shrink-0 uppercase tracking-wide', statusBadge(provider.id).classes]">
             {{ statusBadge(provider.id).label }}
           </span>
 
-          <!-- Expand chevron -->
+          
           <component :is="expanded === provider.id ? ChevronUp : ChevronDown" :size="15" class="text-on-surface-variant/50 shrink-0" />
         </div>
 
-        <!-- Config panel (expanded) -->
+        
         <Transition name="expand">
           <div v-if="expanded === provider.id" class="border-t border-outline-variant/20 bg-surface-container-low/30 px-5 py-4">
             <div class="space-y-4">
 
-              <!-- API Key -->
+              
               <div v-if="!provider.requiresNoKey">
                 <div class="flex items-center justify-between mb-1.5">
                   <label class="text-[12px] font-medium text-on-surface">API Key</label>
@@ -225,7 +225,7 @@ const activeConfig = computed(() => store.activeConfig)
                 <p class="text-[12px] text-on-surface-variant">No API key required — connects to your local Ollama instance.</p>
               </div>
 
-              <!-- Model selector -->
+              
               <div>
                 <div class="flex items-center justify-between mb-1.5">
                   <label class="text-[12px] font-medium text-on-surface">Model</label>
@@ -239,15 +239,15 @@ const activeConfig = computed(() => store.activeConfig)
                   </a>
                 </div>
 
-                <!-- OpenRouter: free-text model ID input -->
-                <template v-if="provider.id === 'openrouter'">
+                
+                <template v-if="provider.id === 'openrouter' || provider.id === 'custom'">
                   <input
                     v-model="getDraft(provider.id).model"
                     type="text"
-                    placeholder="e.g. anthropic/claude-3.5-sonnet"
+                    :placeholder="provider.id === 'openrouter' ? 'e.g. anthropic/claude-3.5-sonnet' : 'e.g. custom-model-name'"
                     class="w-full bg-surface border border-outline-variant/40 text-on-surface text-[13px] rounded-lg px-3 py-2 outline-none focus:border-outline transition-colors font-mono placeholder:text-on-surface-variant/30"
                   />
-                  <!-- Quick-pick chips -->
+                  
                   <div class="flex flex-wrap gap-1.5 mt-2">
                     <button
                       v-for="model in provider.models"
@@ -262,11 +262,11 @@ const activeConfig = computed(() => store.activeConfig)
                     </button>
                   </div>
                   <p class="text-[11px] text-on-surface-variant/50 mt-1.5 ml-0.5">
-                    Enter any model ID from the OpenRouter catalogue, or click a chip above.
+                    {{ provider.id === 'openrouter' ? 'Enter any model ID from the OpenRouter catalogue, or click a chip above.' : 'Enter your custom model identifier/name.' }}
                   </p>
                 </template>
 
-                <!-- All other providers: dropdown -->
+                
                 <template v-else>
                   <select
                     v-model="getDraft(provider.id).model"
@@ -286,7 +286,7 @@ const activeConfig = computed(() => store.activeConfig)
                 </template>
               </div>
 
-              <!-- Custom base URL (Ollama and other custom providers) -->
+              
               <div v-if="provider.supportsCustomBaseUrl">
                 <label class="text-[12px] font-medium text-on-surface block mb-1.5">{{ provider.customBaseUrlLabel ?? 'Base URL' }}</label>
                 <input
@@ -297,9 +297,9 @@ const activeConfig = computed(() => store.activeConfig)
                 />
               </div>
 
-              <!-- Test result -->
+              
               <template v-if="store.getConfig(provider.id).testStatus !== 'untested'">
-                <!-- Success -->
+                
                 <div v-if="store.getConfig(provider.id).testStatus === 'success'"
                   class="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-emerald-50 border border-emerald-200"
                 >
@@ -310,7 +310,7 @@ const activeConfig = computed(() => store.activeConfig)
                   </p>
                 </div>
 
-                <!-- Failure — rich error display -->
+                
                 <div v-else class="rounded-lg bg-red-50 border border-red-200 overflow-hidden">
                   <div class="flex items-start gap-2.5 px-3 py-2.5">
                     <TriangleAlert :size="14" class="text-red-500 shrink-0 mt-0.5" />
@@ -319,7 +319,7 @@ const activeConfig = computed(() => store.activeConfig)
                         Connection failed
                         <span class="font-normal text-[11px] opacity-70 ml-1">{{ latencyLabel(provider.id) }}</span>
                       </p>
-                      <!-- Error message + hint -->
+                      
                       <p v-if="store.getConfig(provider.id).errorMessage" class="text-[11px] text-red-600 mt-1 break-words font-mono">
                         {{ store.getConfig(provider.id).errorMessage }}
                       </p>
@@ -331,9 +331,9 @@ const activeConfig = computed(() => store.activeConfig)
                 </div>
               </template>
 
-              <!-- Action buttons -->
+              
               <div class="flex items-center gap-2 pt-1">
-                <!-- Test -->
+                
                 <button
                   :disabled="store.isTesting(provider.id) || (!provider.requiresNoKey && !getDraft(provider.id).apiKey.trim())"
                   class="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium text-on-surface-variant border border-outline-variant/40 rounded-lg hover:bg-surface-container-high hover:text-on-surface transition-colors disabled:opacity-40"
@@ -344,7 +344,7 @@ const activeConfig = computed(() => store.activeConfig)
                   {{ store.isTesting(provider.id) ? 'Testing…' : 'Test connection' }}
                 </button>
 
-                <!-- Set active -->
+                
                 <button
                   v-if="!store.isActive(provider.id)"
                   :disabled="!store.isConfigured(provider.id) && !provider.requiresNoKey"
@@ -363,7 +363,7 @@ const activeConfig = computed(() => store.activeConfig)
                   Currently active
                 </button>
 
-                <!-- Clear -->
+                
                 <button
                   v-if="store.isConfigured(provider.id) && !provider.requiresNoKey"
                   class="p-1.5 text-on-surface-variant/40 hover:text-red-500 transition-colors"
@@ -379,7 +379,7 @@ const activeConfig = computed(() => store.activeConfig)
       </div>
     </div>
 
-    <!-- Footer note -->
+    
     <p class="text-[11px] text-on-surface-variant/40 text-center mt-6 leading-relaxed">
       API keys are encrypted and stored in your browser's local storage. They are never transmitted to XL-MCP servers.
     </p>

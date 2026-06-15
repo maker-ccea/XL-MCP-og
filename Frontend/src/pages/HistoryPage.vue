@@ -44,7 +44,7 @@ function statusConfig(status: HistoryEntry['status']) {
 
 <template>
   <div class="bg-background font-body-main text-on-surface antialiased h-screen flex flex-col overflow-hidden">
-    <!-- Header -->
+    
     <header class="flex items-center gap-4 px-8 h-16 shrink-0 border-b border-outline-variant/20">
       <button
         class="flex items-center gap-1.5 text-card-title text-on-surface-variant hover:text-on-surface transition-colors"
@@ -64,16 +64,16 @@ function statusConfig(status: HistoryEntry['status']) {
       </button>
     </header>
 
-    <!-- Content -->
+    
     <main class="flex-1 overflow-y-auto px-8 py-6">
       <div class="max-w-[760px] mx-auto">
-        <!-- Loading -->
+        
         <div v-if="loading" class="flex items-center justify-center py-20 text-on-surface-variant">
           <RefreshCw :size="20" class="animate-spin mr-3" />
           Loading history...
         </div>
 
-        <!-- Error -->
+        
         <div v-else-if="error" class="flex flex-col items-center justify-center py-20 gap-4 text-center">
           <AlertCircle :size="32" class="text-on-surface-variant/40" />
           <p class="text-card-body text-on-surface-variant">{{ error }}</p>
@@ -82,21 +82,21 @@ function statusConfig(status: HistoryEntry['status']) {
           </button>
         </div>
 
-        <!-- Empty -->
+        
         <div v-else-if="history.length === 0" class="flex flex-col items-center justify-center py-20 gap-3 text-center">
           <Clock :size="36" class="text-on-surface-variant/30" />
           <p class="text-[15px] font-medium text-on-surface">No history yet</p>
           <p class="text-card-body text-on-surface-variant">Actions you perform on Excel will appear here.</p>
         </div>
 
-        <!-- History list -->
+        
         <div v-else class="space-y-3">
           <div
             v-for="entry in history"
             :key="entry.id"
             class="bg-surface rounded-xl border border-outline-variant/30 overflow-hidden hover:border-custom-border-light transition-colors"
           >
-            <!-- Entry header -->
+            
             <div class="flex items-center gap-3 px-5 py-4">
               <div :class="['w-7 h-7 rounded-full flex items-center justify-center shrink-0', statusConfig(entry.status).bg]">
                 <component :is="statusConfig(entry.status).icon" :size="15" :class="statusConfig(entry.status).color" />
@@ -110,7 +110,7 @@ function statusConfig(status: HistoryEntry['status']) {
               </span>
             </div>
 
-            <!-- Actions summary -->
+            
             <div v-if="entry.actions.length > 0" class="px-5 pb-4 flex flex-wrap gap-1.5">
               <span
                 v-for="(action, idx) in entry.actions"

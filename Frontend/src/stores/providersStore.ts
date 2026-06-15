@@ -57,7 +57,7 @@ export const useProvidersStore = defineStore('providers', () => {
   const active = ref<ActiveProvider | null>(loadActive())
   const testing = ref<Set<ProviderID>>(new Set())
 
-  // ── Getters ──────────────────────────────────────────────────────────────────
+  
 
   function getConfig(id: ProviderID): ProviderConfig {
     return configs.value[id] ?? defaultConfig()
@@ -75,6 +75,9 @@ export const useProvidersStore = defineStore('providers', () => {
     const def = PROVIDER_MAP[id]
     if (def.requiresNoKey) return true
     const cfg = getConfig(id)
+    if (id === 'custom') {
+      return cfg.customBaseUrl.trim().length > 0
+    }
     return cfg.apiKey.trim().length > 0
   }
 
@@ -86,7 +89,7 @@ export const useProvidersStore = defineStore('providers', () => {
     return testing.value.has(id)
   }
 
-  // ── Actions ──────────────────────────────────────────────────────────────────
+  
 
   function updateConfig(id: ProviderID, patch: Partial<ProviderConfig>): void {
     const current = getConfig(id)

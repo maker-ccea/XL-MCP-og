@@ -1,15 +1,18 @@
-﻿import { ref } from 'vue'
+import { ref } from 'vue'
 import { useChatStore } from '@/stores/chatStore'
 
 export function useChat() {
   const chatStore = useChatStore()
   const inputText = ref('')
+  const imageUrl = ref('')
 
   async function submit(): Promise<void> {
     const text = inputText.value.trim()
-    if (!text || chatStore.loading) return
+    const img = imageUrl.value
+    if ((!text && !img) || chatStore.loading) return
     inputText.value = ''
-    await chatStore.sendMessage(text)
+    imageUrl.value = ''
+    await chatStore.sendMessage(text, img)
   }
 
   function handleKeydown(event: KeyboardEvent): void {
@@ -19,6 +22,6 @@ export function useChat() {
     }
   }
 
-  return { inputText, submit, handleKeydown }
+  return { inputText, imageUrl, submit, handleKeydown }
 }
 

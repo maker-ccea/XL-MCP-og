@@ -1,4 +1,4 @@
-﻿import { defineStore } from 'pinia'
+import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import type { AppSettings, Theme, AIModel } from '@/types'
 import { settingsService } from '@/services/settingsService'
@@ -8,10 +8,18 @@ export const useSettingsStore = defineStore('settings', () => {
 
   function applyTheme(theme: Theme): void {
     const root = document.documentElement
+    root.classList.remove('dark', 'theme-nord', 'theme-cyberpunk', 'theme-forest')
+    
     if (theme === 'dark') {
       root.classList.add('dark')
+    } else if (theme === 'nord') {
+      root.classList.add('theme-nord', 'dark')
+    } else if (theme === 'cyberpunk') {
+      root.classList.add('theme-cyberpunk', 'dark')
+    } else if (theme === 'forest-green') {
+      root.classList.add('theme-forest')
     } else if (theme === 'light') {
-      root.classList.remove('dark')
+      
     } else {
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
       root.classList.toggle('dark', prefersDark)

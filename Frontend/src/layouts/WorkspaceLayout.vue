@@ -12,9 +12,9 @@ const sidebarOpen = ref(false)
 
 <template>
   <div class="bg-background font-body-main text-on-surface antialiased h-screen flex flex-col overflow-hidden">
-    <!-- Top Nav Bar -->
+    
     <header class="flex justify-between items-center px-8 h-16 w-full shrink-0 z-10 drag-region">
-      <!-- Left -->
+      
       <div class="flex items-center gap-4 no-drag">
         <button
           class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-md transition-colors flex items-center justify-center"
@@ -31,12 +31,12 @@ const sidebarOpen = ref(false)
         </button>
       </div>
 
-      <!-- Center title -->
+      
       <div class="font-display-welcome text-display-welcome font-semibold text-primary absolute left-1/2 -translate-x-1/2 pointer-events-none">
         Workspace
       </div>
 
-      <!-- Right -->
+      
       <div class="flex items-center gap-4 no-drag">
         <button
           class="p-2 text-on-surface-variant hover:bg-surface-variant rounded-md transition-colors flex items-center justify-center"
@@ -59,12 +59,12 @@ const sidebarOpen = ref(false)
       </div>
     </header>
 
-    <!-- Main Content -->
+    
     <main class="flex-1 px-8 pb-8 flex flex-col min-h-0">
       <slot />
     </main>
 
-    <!-- Sidebar -->
+    
     <WorkbookSidebar :open="sidebarOpen" @close="sidebarOpen = false" />
   </div>
 </template>

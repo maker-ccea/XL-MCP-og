@@ -12,7 +12,7 @@ import IntegrationsSection from '@/components/IntegrationsSection.vue'
 const router = useRouter()
 const settingsStore = useSettingsStore()
 
-// Deep-copy so nested profile object is independent
+
 const local = reactive<AppSettings>({
   ...settingsStore.settings,
   profile: { ...settingsStore.settings.profile }
@@ -35,7 +35,7 @@ const workspaceNav = [
   { id: 'integrations' as Section, label: 'Integrations', icon: Network }
 ]
 
-// ── Profile helpers ───────────────────────────────────────────────────────────
+
 
 const avatarColorOptions: { id: AvatarColor; bg: string; ring: string }[] = [
   { id: 'zinc',    bg: 'bg-zinc-200',    ring: 'ring-zinc-400' },
@@ -67,7 +67,7 @@ const initials = computed(() => {
 
 const avatarBg = computed(() => avatarBgMap[local.profile.avatarColor])
 
-// ── Persistence ───────────────────────────────────────────────────────────────
+
 
 const saved = ref(false)
 
@@ -85,11 +85,60 @@ function reset(): void {
   const fresh = settingsStore.reset()
   Object.assign(local, { ...fresh, profile: { ...fresh.profile } })
 }
+
+const recordingKey = ref<string | null>(null)
+
+function formatShortcutName(key: string): string {
+  switch (key) {
+    case 'toggleSidebar': return 'Toggle Workspace Sidebar'
+    case 'clearChat': return 'Clear Chat History'
+    case 'commandPalette': return 'Open Global Search Palette'
+    case 'toggleExcel': return 'Reconnect Excel Session'
+    default: return key
+  }
+}
+
+function displayShortcut(combo: string): string {
+  if (!combo) return 'None'
+  return combo.replace(/\+/g, ' + ')
+}
+
+function startRecording(key: string): void {
+  recordingKey.value = key
+  window.addEventListener('keydown', handleRecordKeydown, true)
+}
+
+function handleRecordKeydown(e: KeyboardEvent): void {
+  e.preventDefault()
+  e.stopPropagation()
+
+  if (e.key === 'Escape') {
+    recordingKey.value = null
+    window.removeEventListener('keydown', handleRecordKeydown, true)
+    return
+  }
+
+  const modifiers = []
+  if (e.ctrlKey || e.metaKey) modifiers.push('Control')
+  if (e.shiftKey) modifiers.push('Shift')
+  if (e.altKey) modifiers.push('Alt')
+  
+  const key = e.key === 'Control' || e.key === 'Shift' || e.key === 'Alt' ? '' : e.key
+  if (key) {
+    modifiers.push(key)
+    const combo = modifiers.join('+')
+    if (recordingKey.value) {
+      (local.shortcuts as any)[recordingKey.value] = combo
+    }
+    recordingKey.value = null
+    window.removeEventListener('keydown', handleRecordKeydown, true)
+  }
+}
 </script>
 
 <template>
   <div class="bg-surface-container-lowest font-body-main text-on-surface antialiased h-screen flex flex-col overflow-hidden">
-    <!-- Top App Bar -->
+    
     <header class="fixed top-0 w-full z-50 flex justify-between items-center px-8 h-14 bg-surface border-b border-outline-variant/30">
       <div class="flex items-center gap-4">
         <span class="text-[18px] font-semibold text-on-surface tracking-tight">XL-MCP</span>
@@ -107,15 +156,15 @@ function reset(): void {
       </div>
     </header>
 
-    <!-- Settings Container -->
+    
     <main class="pt-14 h-screen flex items-center justify-center bg-surface-container-lowest">
       <div class="relative w-full max-w-[1024px] h-[680px] bg-surface border border-outline-variant/30 rounded-lg overflow-hidden flex shadow-2xl">
-        <!-- Sidebar Nav -->
+        
         <aside class="w-[240px] bg-surface-container-low/50 border-r border-outline-variant/30 flex flex-col">
           <div class="p-5">
             <h2 class="text-[16px] font-semibold text-on-surface mb-5">Settings</h2>
             <nav class="space-y-6">
-              <!-- General -->
+              
               <div>
                 <p class="font-label-caps text-label-caps text-on-surface-variant/70 mb-2 px-2 uppercase">General</p>
                 <ul class="space-y-[2px]">
@@ -135,7 +184,7 @@ function reset(): void {
                   </li>
                 </ul>
               </div>
-              <!-- Workspace -->
+              
               <div>
                 <p class="font-label-caps text-label-caps text-on-surface-variant/70 mb-2 px-2 uppercase">Workspace</p>
                 <ul class="space-y-[2px]">
@@ -162,16 +211,16 @@ function reset(): void {
           </div>
         </aside>
 
-        <!-- Content Panel -->
+        
         <section class="flex-1 overflow-y-auto bg-surface p-8">
-          <!-- AI Behavior -->
+          
           <div v-if="activeSection === 'ai'" class="max-w-[640px] mx-auto">
             <header class="mb-8 border-b border-outline-variant/20 pb-4">
               <h1 class="text-[20px] font-semibold text-on-surface mb-1">AI Behavior</h1>
               <p class="text-[13px] text-on-surface-variant/80">Configure how the intelligence layer interacts with your datasets and provides suggestions.</p>
             </header>
 
-            <!-- Interactive Behavior -->
+            
             <div class="mb-8">
               <h3 class="font-label-caps text-label-caps text-on-surface-variant/70 mb-3 uppercase tracking-wider">Interactive Behavior</h3>
               <div class="border border-outline-variant/30 rounded-lg bg-surface-container-lowest/50 divide-y divide-outline-variant/20">
@@ -201,7 +250,7 @@ function reset(): void {
               </div>
             </div>
 
-            <!-- Context & Range -->
+            
             <div class="mb-8">
               <h3 class="font-label-caps text-label-caps text-on-surface-variant/70 mb-3 uppercase tracking-wider">Context &amp; Range</h3>
               <div class="border border-outline-variant/30 rounded-lg bg-surface-container-lowest/50 divide-y divide-outline-variant/20">
@@ -247,7 +296,7 @@ function reset(): void {
               </div>
             </div>
 
-            <!-- Save / Reset -->
+            
             <div class="flex items-center justify-end gap-3 mt-8 pb-8">
               <button
                 class="px-4 py-1.5 text-[12px] font-medium text-on-surface-variant border border-outline-variant/30 rounded hover:bg-surface-container-highest/50 hover:text-on-surface transition-all"
@@ -264,7 +313,7 @@ function reset(): void {
             </div>
           </div>
 
-          <!-- Appearance -->
+          
           <div v-else-if="activeSection === 'appearance'" class="max-w-[640px] mx-auto">
             <header class="mb-8 border-b border-outline-variant/20 pb-4">
               <h1 class="text-[20px] font-semibold text-on-surface mb-1">Appearance</h1>
@@ -283,6 +332,9 @@ function reset(): void {
                   <option value="light">Light</option>
                   <option value="dark">Dark</option>
                   <option value="system">System</option>
+                  <option value="nord">Nord Arctic</option>
+                  <option value="cyberpunk">Cyberpunk Neon</option>
+                  <option value="forest-green">Forest Green</option>
                 </select>
               </div>
             </div>
@@ -293,7 +345,7 @@ function reset(): void {
             </div>
           </div>
 
-          <!-- Excel Connection -->
+          
           <div v-else-if="activeSection === 'excel'" class="max-w-[640px] mx-auto">
             <header class="mb-8 border-b border-outline-variant/20 pb-4">
               <h1 class="text-[20px] font-semibold text-on-surface mb-1">Excel Connection</h1>
@@ -310,14 +362,14 @@ function reset(): void {
             </div>
           </div>
 
-          <!-- Local Profile -->
+          
           <div v-else-if="activeSection === 'profile'" class="max-w-[640px] mx-auto">
             <header class="mb-8 border-b border-outline-variant/20 pb-4">
               <h1 class="text-[20px] font-semibold text-on-surface mb-1">Local Profile</h1>
               <p class="text-[13px] text-on-surface-variant/80">Personalize your workspace. All data is stored locally on this device.</p>
             </header>
 
-            <!-- Avatar + name preview card -->
+            
             <div class="flex items-center gap-5 p-5 mb-6 border border-outline-variant/30 rounded-xl bg-surface-container-lowest/50">
               <div :class="['w-[64px] h-[64px] rounded-full flex items-center justify-center shrink-0 text-[22px] font-semibold select-none transition-colors', avatarBg]">
                 <span v-if="initials">{{ initials }}</span>
@@ -330,7 +382,7 @@ function reset(): void {
               </div>
             </div>
 
-            <!-- Fields -->
+            
             <div class="mb-6">
               <h3 class="font-label-caps text-label-caps text-on-surface-variant/70 mb-3 uppercase tracking-wider">Identity</h3>
               <div class="border border-outline-variant/30 rounded-lg bg-surface-container-lowest/50 divide-y divide-outline-variant/20">
@@ -356,7 +408,7 @@ function reset(): void {
               </div>
             </div>
 
-            <!-- Avatar color -->
+            
             <div class="mb-8">
               <h3 class="font-label-caps text-label-caps text-on-surface-variant/70 mb-3 uppercase tracking-wider">Avatar Color</h3>
               <div class="border border-outline-variant/30 rounded-lg bg-surface-container-lowest/50 p-4">
@@ -372,7 +424,7 @@ function reset(): void {
               </div>
             </div>
 
-            <!-- Actions -->
+            
             <div class="flex items-center justify-between mt-2 pb-8">
               <p v-if="saved" class="text-[12px] text-emerald-600 font-medium flex items-center gap-1.5">
                 <Check :size="13" /> Profile saved
@@ -387,12 +439,59 @@ function reset(): void {
 
 
 
-          <!-- Integrations -->
+          
           <div v-else-if="activeSection === 'integrations'">
             <IntegrationsSection />
           </div>
 
-          <!-- Other sections (placeholder) -->
+          
+          <div v-else-if="activeSection === 'shortcuts'" class="max-w-[640px] mx-auto">
+            <header class="mb-8 border-b border-outline-variant/20 pb-4">
+              <h1 class="text-[20px] font-semibold text-on-surface mb-1">Keyboard Shortcuts</h1>
+              <p class="text-[13px] text-on-surface-variant/80">Customize key combinations for global operations.</p>
+            </header>
+
+            <div class="border border-outline-variant/30 rounded-lg bg-surface-container-lowest/50 divide-y divide-outline-variant/20">
+              <div v-for="(val, key) in local.shortcuts" :key="key" class="flex items-center justify-between p-4">
+                <div class="pr-4">
+                  <p class="text-[13px] font-medium text-on-surface mb-0.5">{{ formatShortcutName(key) }}</p>
+                  <p class="text-[11px] text-on-surface-variant/70">Press record to bind a new combination.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="px-2 py-1 bg-surface-container-high border border-outline-variant/40 rounded text-[11px] font-mono text-on-surface font-semibold uppercase">
+                    {{ displayShortcut((local.shortcuts as any)[key]) }}
+                  </span>
+                  <button
+                    @click="startRecording(key)"
+                    :class="['px-3 py-1 rounded text-[11px] font-medium border transition-colors',
+                      recordingKey === key
+                        ? 'bg-red-50 text-red-600 border-red-200 animate-pulse'
+                        : 'bg-surface border-outline-variant/40 text-on-surface hover:bg-surface-container-high'
+                    ]"
+                  >
+                    {{ recordingKey === key ? 'Recording...' : 'Record' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 mt-8 pb-8">
+              <button
+                class="px-4 py-1.5 text-[12px] font-medium text-on-surface-variant border border-outline-variant/30 rounded hover:bg-surface-container-highest/50 hover:text-on-surface transition-all"
+                @click="reset"
+              >
+                Reset
+              </button>
+              <button
+                class="px-4 py-1.5 text-[12px] font-medium bg-primary text-background rounded hover:opacity-90 active:scale-95 transition-all shadow-sm"
+                @click="save"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+
+          
           <div v-else class="max-w-[640px] mx-auto flex flex-col items-center justify-center py-20 text-center gap-3">
             <div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center">
               <component :is="[...generalNav, ...workspaceNav].find(n => n.id === activeSection)?.icon ?? User" :size="22" class="text-on-surface-variant" />
@@ -403,7 +502,7 @@ function reset(): void {
         </section>
       </div>
 
-      <!-- Disclaimer -->
+      
       <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 text-[11px] text-outline/50 pointer-events-none">
         <HelpCircle :size="12" />
         <span>Settings apply to the current workspace.</span>
@@ -413,7 +512,7 @@ function reset(): void {
 </template>
 
 <style scoped>
-/* Peer workaround for scoped toggle — target inner div via sibling selector */
+
 input[type='checkbox']:checked ~ div > div {
   transform: translateX(14px);
   background-color: white;

@@ -12,10 +12,10 @@ import type { ActionPreview } from '@/types'
 const chatStore = useChatStore()
 const excelStore = useExcelStore()
 
-// Init Excel polling and WebSocket
+
 const { connected } = useExcel()
 
-// Splash screen state
+
 type SplashStatus = 'checking' | 'connected' | 'failed' | 'not_running'
 const splashVisible = ref(true)
 const backendStatus = ref<'checking' | 'connected' | 'failed'>('checking')
@@ -30,7 +30,7 @@ onMounted(async () => {
     backendStatus.value = 'failed'
     excelStatus.value = 'failed'
   } finally {
-    // Brief pause so user can see the status, then show workspace
+    
     setTimeout(() => { splashVisible.value = false }, 1200)
   }
 })
@@ -45,7 +45,7 @@ function handleReject(): void {
 </script>
 
 <template>
-  <!-- Splash Screen -->
+  
   <Transition name="splash">
     <LoadingScreen
       v-if="splashVisible"
@@ -54,12 +54,12 @@ function handleReject(): void {
     />
   </Transition>
 
-  <!-- Main Workspace -->
+  
   <WorkspaceLayout v-if="!splashVisible">
     <ChatPanel />
   </WorkspaceLayout>
 
-  <!-- Action Preview Modal -->
+  
   <ActionPreviewModal
     v-if="!splashVisible"
     :open="chatStore.showActionModal"

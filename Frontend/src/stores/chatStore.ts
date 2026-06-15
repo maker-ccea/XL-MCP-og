@@ -21,13 +21,14 @@ export const useChatStore = defineStore('chat', () => {
   const hasMessages = computed(() => messages.value.length > 0)
   const lastMessage = computed(() => messages.value.at(-1))
 
-  function addUserMessage(content: string): ChatMessage {
+  function addUserMessage(content: string, imageUrl?: string): ChatMessage {
     const msg: ChatMessage = {
       id: generateId(),
       role: 'user',
       content,
       status: 'done',
-      timestamp: new Date()
+      timestamp: new Date(),
+      imageUrl
     }
     messages.value.push(msg)
     return msg
@@ -50,32 +51,32 @@ export const useChatStore = defineStore('chat', () => {
     const idx = messages.value.findIndex((m) => m.id === id)
     if (idx === -1) return
     const merged = { ...messages.value[idx], ...patch }
-    // Safety net: a 'done' message must always have visible content.
+    
     if (merged.status === 'done' && !merged.content?.trim()) {
       merged.content = 'No response was received from the AI. Please check your provider settings or try again.'
     }
     messages.value[idx] = merged
   }
 
-  // ── Frontend provider chat ─────────────────────────────────────────────────
+  
 
-  async function sendViaProvider(content: string, assistantMsgId: string): Promise<void> {
+  async function sendViaProvider(content: string, assistantMsgId: string, imageUrl?: string): Promise<void> {
     const providersStore = useProvidersStore()
     const ap = providersStore.active!
     const cfg = providersStore.getConfig(ap.providerId)
     const def = PROVIDER_MAP[ap.providerId]
 
-    // Build conversation history for context (last 10 messages)
+    
     const history: ProviderChatMessage[] = [
       { role: 'system', content: EXCEL_SYSTEM_PROMPT }
     ]
-    const recent = messages.value.slice(-11, -1) // exclude the just-added user msg
+    const recent = messages.value.slice(-11, -1) 
     for (const m of recent) {
       if (m.role === 'user' || m.role === 'assistant') {
-        history.push({ role: m.role, content: m.content })
+        history.push({ role: m.role, content: m.content, imageUrl: m.imageUrl })
       }
     }
-    history.push({ role: 'user', content })
+    history.push({ role: 'user', content, imageUrl })
 
     const rawText = await aiProviderService.chat(
       history,
@@ -96,7 +97,7 @@ export const useChatStore = defineStore('chat', () => {
     const { message, actions } = parseAIResponse(rawText)
 
     if (actions && actions.length > 0) {
-      // Convert raw action objects to ActionPreview (optimistic validity)
+      
       const plan: ActionPreview[] = actions.map((a) => ({
         action: a as ExcelAction,
         is_valid: true,
@@ -118,7 +119,7 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
-  // ── Backend chat ───────────────────────────────────────────────────────────
+  
 
   async function sendViaBackend(content: string, assistantMsgId: string): Promise<void> {
     const response = await chatService.sendMessage(content)
@@ -138,19 +139,19 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
-  // ── Main sendMessage ───────────────────────────────────────────────────────
+  
 
-  async function sendMessage(content: string): Promise<void> {
-    if (!content.trim() || loading.value) return
+  async function sendMessage(content: string, imageUrl?: string): Promise<void> {
+    if ((!content.trim() && !imageUrl) || loading.value) return
 
     loading.value = true
-    addUserMessage(content)
+    addUserMessage(content, imageUrl)
     const assistantMsg = addAssistantMessage()
 
     try {
       const providersStore = useProvidersStore()
       if (providersStore.active) {
-        await sendViaProvider(content, assistantMsg.id)
+        await sendViaProvider(content, assistantMsg.id, imageUrl)
       } else {
         await sendViaBackend(content, assistantMsg.id)
       }
@@ -165,24 +166,54 @@ export const useChatStore = defineStore('chat', () => {
     }
   }
 
-  // ── Execute & lifecycle ────────────────────────────────────────────────────
+  
 
   async function executeApprovedPlan(actions: ExcelAction[]): Promise<void> {
+    const actionsPlan = pendingPlan.value || []
     showActionModal.value = false
     loading.value = true
 
-    const execMsg = addAssistantMessage({ content: 'Executing actions in Excel…', status: 'streaming' })
+    const execMsg = addAssistantMessage({
+      content: `Preparing to execute ${actions.length} action(s)...`,
+      status: 'streaming',
+      plan: actionsPlan,
+      results: []
+    })
+
+    const results: ActionResult[] = []
+    let successCount = 0
+    let failureCount = 0
 
     try {
-      const result = await chatService.executeActions(actions)
-      const summary = buildExecutionSummary(result.results, result.success_count, result.failure_count)
+      for (let i = 0; i < actions.length; i++) {
+        const action = actions[i]
+        const actionName = formatActionName(action.action)
+        
+        updateMessage(execMsg.id, {
+          content: `Executing action ${i + 1} of ${actions.length}: **${actionName}**...`
+        })
 
+        const response = await chatService.executeActions([action])
+        const singleResult = response.results[0]
+        
+        results.push(singleResult)
+        if (singleResult.success) {
+          successCount++
+        } else {
+          failureCount++
+        }
+
+        updateMessage(execMsg.id, {
+          results: [...results]
+        })
+      }
+
+      const summary = buildExecutionSummary(results, successCount, failureCount)
       updateMessage(execMsg.id, {
         content: summary,
-        status: 'done',
-        results: result.results
+        status: 'done'
       })
-    } catch {
+    } catch (err) {
       updateMessage(execMsg.id, {
         content: 'Execution failed. Please check Excel is open and accessible.',
         status: 'error'

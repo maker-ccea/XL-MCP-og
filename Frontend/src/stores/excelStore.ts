@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { WorkbookContext, HealthResponse } from '@/types'
+import type { WorkbookContext, HealthResponse, SelectionData } from '@/types'
 import { excelService } from '@/services/excelService'
 
 export const useExcelStore = defineStore('excel', () => {
@@ -8,6 +8,7 @@ export const useExcelStore = defineStore('excel', () => {
   const activeSheet = ref<string | null>(null)
   const selectedRange = ref<string | null>(null)
   const availableSheets = ref<string[]>([])
+  const selectionData = ref<SelectionData | null>(null)
   const excelRunning = ref(false)
   const backendHealthy = ref(false)
   const connectionError = ref<string | null>(null)
@@ -37,7 +38,7 @@ export const useExcelStore = defineStore('excel', () => {
       const ctx = await excelService.getState()
       applyContext(ctx)
     } catch {
-      // Excel might not have a workbook open — ignore
+      
     }
   }
 
@@ -46,6 +47,7 @@ export const useExcelStore = defineStore('excel', () => {
     activeSheet.value = ctx.sheet_name
     selectedRange.value = ctx.selected_range
     availableSheets.value = ctx.available_sheets
+    selectionData.value = ctx.selection_data || null
   }
 
   function applyWebSocketState(state: WorkbookContext): void {
@@ -57,6 +59,7 @@ export const useExcelStore = defineStore('excel', () => {
     activeSheet,
     selectedRange,
     availableSheets,
+    selectionData,
     excelRunning,
     backendHealthy,
     connectionError,
