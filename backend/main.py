@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes.chat import router as chat_router
 from excel.excel_connection import excel_conn
 
-# Setup logging
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("main_server")
 
@@ -13,7 +13,7 @@ app = FastAPI(
     description="Backend service for AI-powered Excel workspace desktop application"
 )
 
-# Add CORS middleware
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,7 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routes
+
 app.include_router(chat_router)
 
 @app.on_event("startup")

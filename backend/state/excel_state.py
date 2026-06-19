@@ -1,11 +1,13 @@
-# Import Dict, Any and List from typing
+
 from typing import Dict, Any, List
-# Import context helpers to fetch the latest values from Excel
+
 from excel.context import get_workbook_context
-# Import logging to log state transitions
+
 import logging
 
-# Configure local logger for tracking state updates
+from state.graph_db import graph_db
+
+
 logger = logging.getLogger("excel_state")
 
 class ExcelStateManager:
@@ -13,22 +15,22 @@ class ExcelStateManager:
     Tracks and updates the current state of Excel (active workbook, sheet, selection).
     """
     def __init__(self) -> None:
-        # Cache dictionary storing the current Excel state attributes
+
         self._current_state: Dict[str, Any] = {
             "workbook": "",
             "sheet": "",
             "selection": ""
         }
-        # List to track the historical log of executed actions
+
         self._history: List[Dict[str, Any]] = []
 
     def get_current_state(self) -> Dict[str, Any]:
         """
         Returns the cached state. Calls update_state first to ensure values are fresh.
         """
-        # Refresh the cache before returning
+
         self.update_state()
-        # Return the state dictionary
+
         return self._current_state
 
     def update_state(self) -> Dict[str, Any]:
@@ -36,18 +38,35 @@ class ExcelStateManager:
         Queries Excel and synchronizes the local cache with the active environment state.
         """
         try:
-            # Query Excel connection context metadata
+
             context = get_workbook_context()
-            
-            # Map context fields to the state cache structure
-            self._current_state["workbook"] = context["workbook_name"] or ""
-            self._current_state["sheet"] = context["sheet_name"] or ""
-            self._current_state["selection"] = context["selected_range"] or ""
+
+
+            wb_name = context["workbook_name"] or ""
+            sheet_name = context["sheet_name"] or ""
+            selection = context["selected_range"] or ""
+
+            self._current_state["workbook"] = wb_name
+            self._current_state["sheet"] = sheet_name
+            self._current_state["selection"] = selection
+
+
+            if wb_name:
+                graph_db.add_node(wb_name, "Workbook", {"name": wb_name})
+                if sheet_name:
+                    sheet_id = f"{wb_name}::{sheet_name}"
+                    graph_db.add_node(sheet_id, "Sheet", {"name": sheet_name, "workbook": wb_name})
+                    graph_db.add_edge(wb_name, sheet_id, "HAS_SHEET")
+                    if selection:
+                        range_id = f"{sheet_id}::{selection}"
+                        graph_db.add_node(range_id, "Range", {"address": selection, "sheet": sheet_name})
+                        graph_db.add_edge(sheet_id, range_id, "HAS_RANGE")
+
         except Exception as e:
-            # Log any errors when synchronizing state
+
             logger.error(f"Error updating excel state: {e}")
-            
-        # Return the updated state cache
+
+
         return self._current_state
 
     def track_selection_changes(self) -> bool:
@@ -55,26 +74,52 @@ class ExcelStateManager:
         Checks if the selection has changed relative to the cache.
         Returns True if a change is detected.
         """
-        # Save reference to previous cached selection
+
         old_selection = self._current_state.get("selection", "")
-        # Refresh state from active Excel session
+
         self.update_state()
-        # Compare and return True if current selection differs from old selection
+
         return old_selection != self._current_state.get("selection", "")
 
     def log_action(self, action_dict: Dict[str, Any]) -> None:
         """
         Logs a successfully executed action to the execution history array.
         """
-        # Append the action payload to the history log
+
         self._history.append(action_dict)
+
+
+        try:
+            action = action_dict.get("action", {})
+            action_id = action.get("id")
+            action_type = action.get("action")
+            if action_id and action_type:
+
+                graph_db.add_node(action_id, "Action", action)
+
+
+                wb_name = self._current_state.get("workbook")
+                sheet_name = self._current_state.get("sheet")
+                if wb_name and sheet_name:
+                    sheet_id = f"{wb_name}::{sheet_name}"
+                    graph_db.add_edge(action_id, sheet_id, "IN_SHEET")
+
+
+                    target_range = action.get("range") or action.get("cell")
+                    if target_range:
+                        range_id = f"{sheet_id}::{target_range}"
+
+                        graph_db.add_node(range_id, "Range", {"address": target_range, "sheet": sheet_name})
+                        graph_db.add_edge(action_id, range_id, "MODIFIED_RANGE")
+        except Exception as e:
+            logger.error(f"Error logging action to graph: {e}")
 
     def get_history(self) -> List[Dict[str, Any]]:
         """
         Returns the list of actions that have been executed so far.
         """
-        # Return the action history list
+
         return self._history
 
-# Global state manager instance
+
 state_manager = ExcelStateManager()

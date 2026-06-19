@@ -1,6 +1,6 @@
-# Import typing helpers
+
 from typing import List, Dict, Any
-# Import Pydantic parser schemas
+
 from schemas.actions import (
     ExcelAction,
     OpenWorkbookAction,
@@ -28,15 +28,15 @@ from schemas.actions import (
     DeleteChartAction,
     UpdateChartTitleAction,
 )
-# Import natural language parser function
+
 from ai.parser import parse_natural_language
-# Import logger
+
 import logging
 
-# Configure local logger for planning module
+
 logger = logging.getLogger("ai_planner")
 
-# Dictionary mapping action action names to their corresponding Pydantic model classes
+
 ACTION_MODEL_MAP = {
     "open_workbook": OpenWorkbookAction,
     "create_workbook": CreateWorkbookAction,
@@ -68,31 +68,31 @@ def generate_action_plan(message: str) -> List[ExcelAction]:
     """
     Parses a natural language instruction and generates a sequence of validated Pydantic Action models.
     """
-    # 1. Parse natural language message to list of dictionaries
+
     raw_actions = parse_natural_language(message)
-    
-    # Initialize a list to hold the validated ExcelAction Pydantic objects
+
+
     action_plan: List[ExcelAction] = []
-    
-    # 2. Map and validate each action dictionary using Pydantic models
+
+
     for act_dict in raw_actions:
-        # Extract the action name/type
+
         action_name = act_dict.get("action")
-        
-        # Check if the action name is recognized and has a Pydantic model mapped
+
+
         if action_name in ACTION_MODEL_MAP:
             try:
-                # Instantiate the Pydantic model class passing the dictionary items as kwargs
+
                 model_class = ACTION_MODEL_MAP[action_name]
                 action_obj = model_class(**act_dict)
-                # Append the validated object to the plan list
+
                 action_plan.append(action_obj)
             except Exception as e:
-                # Log any validation exceptions raised when parsing the dict to Pydantic model
+
                 logger.error(f"Action validation failed for dictionary data '{act_dict}': {e}")
         else:
-            # Log any unsupported/unknown action key found
+
             logger.warning(f"Skipping unsupported action dictionary key: '{action_name}'")
-            
-    # Return the generated plan of strongly-typed Pydantic objects
+
+
     return action_plan
