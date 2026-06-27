@@ -157,6 +157,9 @@ export const useChatStore = defineStore('chat', () => {
     const assistantMsg = addAssistantMessage()
 
     try {
+      const excelStore = useExcelStore()
+      await excelStore.refreshState()
+      
       const providersStore = useProvidersStore()
       if (providersStore.active) {
         await sendViaProvider(content, assistantMsg.id, imageUrl)

@@ -67,6 +67,7 @@ Prompt Guidance for Ranges:
 - If the user specifies an operation (like sorting, formatting, or creating charts) but does NOT explicitly state the range, first check if "Current Selection" has a valid range (e.g. A1:B10).
 - If "Current Selection" is None, empty, or a single cell (e.g. A1), you MUST use the "Used Range" value as the target range for the action.
 - When sorting, "key_column" is the 1-based index of the column to sort by. E.g. "Department" as the second column means key_column is 2.
+- You have a direct "sort_range" action available. Always prefer using the "sort_range" action when the user asks to sort columns, ranges, or tables. Do NOT say you cannot sort or guide the user to sort manually unless the range is empty or unavailable.
 
 For analysis, explanations, formula suggestions, or questions that don't require modifying Excel, respond conversationally without an actions block.`
 
