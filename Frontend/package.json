@@ -31,7 +31,8 @@
       }
     ],
     "win": {
-      "target": "nsis"
+      "target": "zip",
+      "sign": "./noop-sign.cjs"
     },
     "nsis": {
       "oneClick": false,
