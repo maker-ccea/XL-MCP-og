@@ -14,8 +14,30 @@ async function loadHistory(): Promise<void> {
   loading.value = true
   error.value = null
   try {
-    history.value = await excelService.getHistory()
-  } catch {
+    const raw = await excelService.getHistory() as any[]
+    history.value = raw.map((item: any, index: number) => {
+      if (item && item.actions && Array.isArray(item.actions)) {
+        return item as HistoryEntry
+      }
+      const action = item?.action || {}
+      return {
+        id: action.id || String(index),
+        timestamp: item?.timestamp || new Date().toISOString(),
+        message: `Executed action: ${action.action ? action.action.replace(/_/g, ' ') : 'Unknown'}`,
+        actions: [action],
+        results: [
+          {
+            action_type: action.action || 'unknown',
+            success: item?.status === 'success',
+            error: item?.error || null,
+            data: null
+          }
+        ],
+        status: item?.status === 'success' ? 'success' : 'failed'
+      } as HistoryEntry
+    })
+  } catch (err) {
+    console.error(err)
     error.value = 'Could not load history. Make sure the backend is running.'
   } finally {
     loading.value = false

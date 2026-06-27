@@ -88,7 +88,9 @@ class ExcelStateManager:
         """
         Logs a successfully executed action to the execution history array.
         """
-
+        import datetime
+        if "timestamp" not in action_dict:
+            action_dict["timestamp"] = datetime.datetime.utcnow().isoformat() + "Z"
         self._history.append(action_dict)
 
 
