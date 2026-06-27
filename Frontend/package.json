@@ -8,7 +8,35 @@
     "dev": "electron-vite dev",
     "build": "electron-vite build",
     "preview": "electron-vite preview",
+    "dist": "electron-vite build && electron-builder --win",
     "typecheck": "vue-tsc --noEmit"
+  },
+  "build": {
+    "appId": "com.xl-mcp.app",
+    "productName": "XL-MCP",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "out/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../backend/dist/backend_server",
+        "to": "backend_server",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",

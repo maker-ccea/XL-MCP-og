@@ -108,14 +108,20 @@ function makeNodeRequest(params: AIRequestParams): Promise<AIRequestResult> {
 // ─── Backend startup ──────────────────────────────────────────────────────────
 
 function startBackendServer(): void {
-  if (!isDev) return
-
   try {
-    const backendPath = join(__dirname, '../../../backend')
-    backendProcess = spawn('python', ['-m', 'uvicorn', 'main:app', '--host', '127.0.0.1', '--port', '8000'], {
-      cwd: backendPath,
-      stdio: 'pipe'
-    })
+    if (isDev) {
+      const backendPath = join(__dirname, '../../../backend')
+      backendProcess = spawn('python', ['-m', 'uvicorn', 'main:app', '--host', '127.0.0.1', '--port', '8000'], {
+        cwd: backendPath,
+        stdio: 'pipe'
+      })
+    } else {
+      const backendExe = join(process.resourcesPath, 'backend_server', 'backend_server.exe')
+      backendProcess = spawn(backendExe, ['--host', '127.0.0.1', '--port', '8000'], {
+        cwd: join(process.resourcesPath, 'backend_server'),
+        stdio: 'pipe'
+      })
+    }
 
     backendProcess.stdout?.on('data', (data: Buffer) => {
       console.log('[Backend]', data.toString())
