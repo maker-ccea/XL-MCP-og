@@ -95,6 +95,19 @@ def get_selected_range_data() -> Optional[Dict[str, Any]]:
     except Exception:
         return None
 
+def get_used_range() -> Optional[str]:
+    """
+    Returns the used range address of the active sheet without dollar signs (e.g., "A1:C50").
+    """
+    try:
+        sheet = get_active_sheet()
+        if sheet is not None:
+            addr = sheet.used_range.address
+            return addr.replace("$", "")
+        return None
+    except Exception:
+        return None
+
 def get_workbook_context() -> Dict[str, Any]:
     """
     Aggregates workbook name, sheet name, selected range address,
@@ -109,6 +122,7 @@ def get_workbook_context() -> Dict[str, Any]:
             "workbook_name": None,
             "sheet_name": None,
             "selected_range": None,
+            "used_range": None,
             "available_sheets": [],
             "selection_data": None
         }
@@ -127,6 +141,7 @@ def get_workbook_context() -> Dict[str, Any]:
         "workbook_name": book.name,
         "sheet_name": get_active_sheet_name(),
         "selected_range": get_selected_range(),
+        "used_range": get_used_range(),
         "available_sheets": sheet_list,
         "selection_data": get_selected_range_data()
     }

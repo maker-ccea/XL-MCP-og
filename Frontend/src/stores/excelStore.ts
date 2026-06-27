@@ -7,6 +7,7 @@ export const useExcelStore = defineStore('excel', () => {
   const workbookName = ref<string | null>(null)
   const activeSheet = ref<string | null>(null)
   const selectedRange = ref<string | null>(null)
+  const usedRange = ref<string | null>(null)
   const availableSheets = ref<string[]>([])
   const selectionData = ref<SelectionData | null>(null)
   const excelRunning = ref(false)
@@ -46,6 +47,7 @@ export const useExcelStore = defineStore('excel', () => {
     workbookName.value = ctx.workbook_name
     activeSheet.value = ctx.sheet_name
     selectedRange.value = ctx.selected_range
+    usedRange.value = ctx.used_range
     availableSheets.value = ctx.available_sheets
     selectionData.value = ctx.selection_data || null
   }
@@ -58,6 +60,7 @@ export const useExcelStore = defineStore('excel', () => {
     workbookName,
     activeSheet,
     selectedRange,
+    usedRange,
     availableSheets,
     selectionData,
     excelRunning,

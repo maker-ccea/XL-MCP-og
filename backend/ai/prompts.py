@@ -29,12 +29,26 @@ Here are the supported actions:
     Supported chart_type values: column, column_stacked, bar, bar_stacked, line, line_markers, pie, scatter, area, area_stacked, doughnut
 23. {"action": "delete_chart", "name": "<chart_name>"}
 24. {"action": "update_chart_title", "name": "<chart_name>", "title": "<new_title>"}
+25. {"action": "sort_range", "range": "<range>", "key_column": <1-based_index>, "ascending": true/false, "has_headers": true/false}
 
 Context of active workbook:
 Active Workbook: {workbook_name}
 Active Sheet: {sheet_name}
 Current Selection: {selected_range}
+Used Range: {used_range}
 Available Sheets: {available_sheets}
+
+Prompt Guidance for Ranges:
+- If the user specifies an operation (like sorting, formatting, or creating charts) but does NOT explicitly state the range, first check if "Current Selection" has a valid range (e.g. A1:B10).
+- If "Current Selection" is None, empty, or a single cell (e.g. A1), you MUST use the "Used Range" value as the target range for the action.
+- When sorting, "key_column" is the 1-based index of the column to sort by. E.g. "Department" as the second column means key_column is 2.
+
+Example Input:
+"sort the second column Department in ascending order"
+Example JSON Output:
+[
+  {"action": "sort_range", "range": "{used_range}", "key_column": 2, "ascending": true, "has_headers": true}
+]
 
 Example Input:
 "Make cells A1 to B10 bold and change their background to light blue"

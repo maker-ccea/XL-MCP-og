@@ -54,6 +54,19 @@ Available actions:
   Supported chart_type values: column, column_stacked, bar, bar_stacked, line, line_markers, pie, scatter, area, area_stacked, doughnut
 - {"action": "delete_chart", "name": "Sales Overview"}
 - {"action": "update_chart_title", "name": "Chart 1", "title": "New Title"}
+- {"action": "sort_range", "range": "A1:C50", "key_column": 2, "ascending": true, "has_headers": true}
+
+Context of active workbook:
+Active Workbook: {workbook_name}
+Active Sheet: {sheet_name}
+Current Selection: {selected_range}
+Used Range: {used_range}
+Available Sheets: {available_sheets}
+
+Prompt Guidance for Ranges:
+- If the user specifies an operation (like sorting, formatting, or creating charts) but does NOT explicitly state the range, first check if "Current Selection" has a valid range (e.g. A1:B10).
+- If "Current Selection" is None, empty, or a single cell (e.g. A1), you MUST use the "Used Range" value as the target range for the action.
+- When sorting, "key_column" is the 1-based index of the column to sort by. E.g. "Department" as the second column means key_column is 2.
 
 For analysis, explanations, formula suggestions, or questions that don't require modifying Excel, respond conversationally without an actions block.`
 

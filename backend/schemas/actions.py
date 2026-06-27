@@ -204,6 +204,12 @@ class UpdateChartTitleAction(BaseAction):
     title: str = Field(..., description="New title text for the chart")
     sheet: Optional[str] = Field(None, description="Sheet name containing the chart (defaults to active sheet)")
 
+class SortRangeAction(BaseAction):
+    action: Literal["sort_range"] = "sort_range"
+    range: str = Field(..., description="The range of the data table to sort, e.g. A1:C50")
+    key_column: int = Field(..., description="The 1-based column index to sort by (relative to sheet or range), e.g. 2 for column B or second column")
+    ascending: bool = Field(True, description="Whether to sort in ascending order (default true)")
+    has_headers: bool = Field(True, description="Whether the data range has a header row (default true)")
 
 ExcelAction = Union[
     OpenWorkbookAction,
@@ -230,4 +236,5 @@ ExcelAction = Union[
     CreateChartAction,
     DeleteChartAction,
     UpdateChartTitleAction,
+    SortRangeAction,
 ]

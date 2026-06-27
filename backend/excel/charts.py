@@ -60,6 +60,62 @@ def create_chart(
 
     src_range = sheet.range(data_range)
 
+    # Automatically detect and summarize categorical (text) data
+    try:
+        values = src_range.value
+        flat_values = []
+        if isinstance(values, list):
+            for val in values:
+                if isinstance(val, list):
+                    flat_values.extend(val)
+                else:
+                    flat_values.append(val)
+        else:
+            flat_values.append(values)
+
+        flat_values = [v for v in flat_values if v is not None and str(v).strip() != ""]
+
+        def is_numeric(v):
+            try:
+                float(str(v))
+                return True
+            except ValueError:
+                return False
+
+        non_numeric_count = sum(1 for v in flat_values if not is_numeric(v))
+
+        if len(flat_values) > 0 and (non_numeric_count / len(flat_values)) > 0.7:
+            from collections import Counter
+            counts = Counter(flat_values)
+
+            # Determine where to put the summary table (leave a gap of 2 columns after used range)
+            used_range = sheet.used_range
+            start_col = used_range.last_cell.column + 2
+            start_row = 1
+
+            def col_to_letter(col_idx):
+                letter = ""
+                while col_idx > 0:
+                    col_idx, remainder = divmod(col_idx - 1, 26)
+                    letter = chr(65 + remainder) + letter
+                return letter
+
+            summary_col_letter = col_to_letter(start_col)
+            end_col_letter = col_to_letter(start_col + 1)
+            summary_range_str = f"{summary_col_letter}{start_row}"
+
+            header_label = title or "Category"
+            summary_data = [[header_label, "Count"]]
+            for k, v in counts.items():
+                summary_data.append([k, v])
+
+            sheet.range(summary_range_str).value = summary_data
+            sheet.range(f"{summary_col_letter}:{end_col_letter}").autofit()
+
+            num_rows = len(summary_data)
+            src_range = sheet.range(f"{summary_col_letter}{start_row}:{end_col_letter}{start_row + num_rows - 1}")
+    except Exception as ex:
+        logger.warning(f"Failed to auto-summarize chart data: {ex}")
 
     chart_left = left if left is not None else src_range.left
     chart_top  = top  if top  is not None else src_range.top + src_range.height + 12
@@ -76,7 +132,10 @@ def create_chart(
     )
 
 
-    com_chart = chart_obj.api.Chart
+    if isinstance(chart_obj.api, tuple):
+        com_chart = chart_obj.api[1]
+    else:
+        com_chart = chart_obj.api.Chart
 
 
     com_chart.ChartType = ct
@@ -114,7 +173,10 @@ def update_chart_title(name: str, title: str, sheet_name: Optional[str] = None) 
     sheet = _get_sheet(sheet_name)
     for ch in sheet.charts:
         if ch.name == name:
-            com_chart = ch.api.Chart
+            if isinstance(ch.api, tuple):
+                com_chart = ch.api[1]
+            else:
+                com_chart = ch.api.Chart
             com_chart.HasTitle = True
             com_chart.ChartTitle.Text = title
             logger.info(f"Updated chart '{name}' title → '{title}'")

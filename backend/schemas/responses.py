@@ -12,6 +12,8 @@ class WorkbookContext(BaseModel):
 
     selected_range: Optional[str] = Field(None, description="The range address currently selected by the user, e.g. A1:B5")
 
+    used_range: Optional[str] = Field(None, description="The range address containing all data on the worksheet, e.g. A1:C50")
+
     available_sheets: List[str] = Field(default_factory=list, description="List of all worksheet names in the workbook")
 
     selection_data: Optional[Dict[str, Any]] = Field(None, description="Data within the selected range for grid preview")

@@ -46,7 +46,7 @@ def execute_action(action: ExcelAction) -> ActionResult:
     target_range = None
     if action_type in ["write_cell", "apply_formula", "remove_formula"]:
         target_range = getattr(action, "cell", None)
-    elif action_type in ["write_range", "clear_cells", "fill_formula", "set_bold", "set_italic", "set_font_size", "set_font_color", "set_background_color"]:
+    elif action_type in ["write_range", "clear_cells", "fill_formula", "set_bold", "set_italic", "set_font_size", "set_font_color", "set_background_color", "sort_range"]:
         target_range = getattr(action, "range", None)
 
     if target_range:
@@ -185,6 +185,15 @@ def execute_action(action: ExcelAction) -> ActionResult:
                 name=action.name,
                 title=action.title,
                 sheet_name=getattr(action, "sheet", None),
+            )
+            success = True
+
+        elif action_type == "sort_range":
+            cells.sort_range(
+                range_address=action.range,
+                key_column=action.key_column,
+                ascending=getattr(action, "ascending", True),
+                has_headers=getattr(action, "has_headers", True),
             )
             success = True
 

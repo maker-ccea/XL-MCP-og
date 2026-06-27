@@ -19,7 +19,8 @@ class ExcelStateManager:
         self._current_state: Dict[str, Any] = {
             "workbook": "",
             "sheet": "",
-            "selection": ""
+            "selection": "",
+            "used_range": ""
         }
 
         self._history: List[Dict[str, Any]] = []
@@ -45,10 +46,12 @@ class ExcelStateManager:
             wb_name = context["workbook_name"] or ""
             sheet_name = context["sheet_name"] or ""
             selection = context["selected_range"] or ""
+            used_range = context["used_range"] or ""
 
             self._current_state["workbook"] = wb_name
             self._current_state["sheet"] = sheet_name
             self._current_state["selection"] = selection
+            self._current_state["used_range"] = used_range
 
 
             if wb_name:

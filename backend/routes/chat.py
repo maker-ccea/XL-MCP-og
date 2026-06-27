@@ -143,12 +143,14 @@ async def get_state_endpoint():
             workbook_name=context.get("workbook_name"),
             sheet_name=context.get("sheet_name"),
             selected_range=context.get("selected_range"),
-            available_sheets=context.get("available_sheets", [])
+            used_range=context.get("used_range"),
+            available_sheets=context.get("available_sheets", []),
+            selection_data=context.get("selection_data")
         )
     except Exception as e:
         logger.error(f"Error in state endpoint: {e}")
 
-        return WorkbookContext(workbook_name=None, sheet_name=None, selected_range=None, available_sheets=[])
+        return WorkbookContext(workbook_name=None, sheet_name=None, selected_range=None, used_range=None, available_sheets=[])
 
 @router.get("/history", response_model=List[Dict[str, Any]])
 async def get_history_endpoint():

@@ -146,6 +146,7 @@ def parse_with_llm(message: str) -> Optional[List[Dict[str, Any]]]:
         .replace("{workbook_name}", str(state.get("workbook") or "None"))
         .replace("{sheet_name}", str(state.get("sheet") or "None"))
         .replace("{selected_range}", str(state.get("selection") or "None"))
+        .replace("{used_range}", str(state.get("used_range") or "None"))
         .replace("{available_sheets}", str([]))
     )
 

@@ -12,6 +12,7 @@ export interface WorkbookContext {
   workbook_name: string | null
   sheet_name: string | null
   selected_range: string | null
+  used_range: string | null
   available_sheets: string[]
   selection_data?: SelectionData | null
 }

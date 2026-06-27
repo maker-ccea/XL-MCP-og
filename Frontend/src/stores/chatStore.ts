@@ -5,6 +5,7 @@ import { chatService } from '@/services/chatService'
 import { aiProviderService, parseAIResponse, EXCEL_SYSTEM_PROMPT } from '@/services/aiProviderService'
 import type { ProviderChatMessage } from '@/services/aiProviderService'
 import { useProvidersStore } from '@/stores/providersStore'
+import { useExcelStore } from '@/stores/excelStore'
 import { PROVIDER_MAP } from '@/config/providers'
 
 function generateId(): string {
@@ -62,13 +63,20 @@ export const useChatStore = defineStore('chat', () => {
 
   async function sendViaProvider(content: string, assistantMsgId: string, imageUrl?: string): Promise<void> {
     const providersStore = useProvidersStore()
+    const excelStore = useExcelStore()
     const ap = providersStore.active!
     const cfg = providersStore.getConfig(ap.providerId)
     const def = PROVIDER_MAP[ap.providerId]
 
-    
+    const systemPrompt = EXCEL_SYSTEM_PROMPT
+      .replace('{workbook_name}', excelStore.workbookName || 'None')
+      .replace('{sheet_name}', excelStore.activeSheet || 'None')
+      .replace('{selected_range}', excelStore.selectedRange || 'None')
+      .replace('{used_range}', excelStore.usedRange || 'None')
+      .replace('{available_sheets}', JSON.stringify(excelStore.availableSheets || []))
+
     const history: ProviderChatMessage[] = [
-      { role: 'system', content: EXCEL_SYSTEM_PROMPT }
+      { role: 'system', content: systemPrompt }
     ]
     const recent = messages.value.slice(-11, -1) 
     for (const m of recent) {

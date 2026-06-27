@@ -27,6 +27,7 @@ from schemas.actions import (
     CreateChartAction,
     DeleteChartAction,
     UpdateChartTitleAction,
+    SortRangeAction,
 )
 
 from ai.parser import parse_natural_language
@@ -62,6 +63,7 @@ ACTION_MODEL_MAP = {
     "create_chart": CreateChartAction,
     "delete_chart": DeleteChartAction,
     "update_chart_title": UpdateChartTitleAction,
+    "sort_range": SortRangeAction,
 }
 
 def generate_action_plan(message: str) -> List[ExcelAction]:
